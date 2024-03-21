@@ -1,0 +1,17 @@
+name: krok
+description: Yet another Kraken API client for Dart.
+version: 0.0.0
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+repository: https://github.com/DanielLukic/dart-kraken-api
+topics: [ kraken, api, client, dart ]
+
+environment:
+  sdk: ^3.3.1
+
+dependencies:
+  crypto: ^3.0.1
+  http: ^1.2.1
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0

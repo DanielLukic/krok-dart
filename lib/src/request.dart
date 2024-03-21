@@ -1,0 +1,202 @@
+part of 'api.dart';
+
+class KrakenRequest {
+  final String path;
+  final Map<String, dynamic> params;
+  final Scope scope;
+
+  KrakenRequest.systemStatus()
+      : path = "SystemStatus",
+        params = {},
+        scope = Scope.public;
+
+  KrakenRequest.assets({List<Pair>? assets})
+      : assert(assets?.isEmpty != true, "null or at least one asset expected"),
+        path = "Assets",
+        params = {
+          if (assets != null) "asset": assets.map((a) => a.name).join(","),
+        },
+        scope = Scope.public;
+
+  KrakenRequest.assetPairs({List<Pair>? pairs, AssetPairsInfo? info})
+      : assert(pairs?.isEmpty != true, "null or at least one pair expected"),
+        path = "AssetPairs",
+        params = {
+          if (pairs != null) "pair": pairs.map((a) => a.name).join(","),
+          if (info != null) "info": info.name,
+        },
+        scope = Scope.public;
+
+  KrakenRequest.ticker({List<Pair>? pairs})
+      : assert(pairs?.isEmpty != true, "null or at least one pair expected"),
+        path = "Ticker",
+        params = {
+          if (pairs != null) "pair": pairs.map((a) => a.name).join(","),
+        },
+        scope = Scope.public;
+
+  KrakenRequest.ohlc(List<Pair>? pairs, {OhlcInterval? interval})
+      : assert(pairs?.isEmpty != true, "null or at least one pair expected"),
+        path = "OHLC",
+        params = {
+          if (pairs != null) "pair": pairs.map((a) => a.name).join(","),
+          if (interval != null) "interval": interval.minutes,
+        },
+        scope = Scope.public;
+
+  KrakenRequest.spread(Pair? pair)
+      : path = "Spread",
+        params = {if (pair != null) "pair": pair},
+        scope = Scope.public;
+
+  KrakenRequest.balance()
+      : path = "Balance",
+        params = {},
+        scope = Scope.private;
+
+  KrakenRequest.balanceEx()
+      : path = "BalanceEx",
+        params = {},
+        scope = Scope.private;
+
+  KrakenRequest.tradeBalance({String? baseAsset})
+      : path = "TradeBalance",
+        params = {if (baseAsset != null) "asset": baseAsset},
+        scope = Scope.private;
+
+  KrakenRequest.openOrders({bool? trades})
+      : path = "OpenOrders",
+        params = {if (trades != null) "trades": trades},
+        scope = Scope.private;
+
+  KrakenRequest.closedOrders({
+    bool? trades,
+    int? startTimestamp,
+    int? endTimestamp,
+    int? offset,
+    CloseTime? closeTime,
+    bool? consolidateTaker,
+  })  : path = "ClosedOrders",
+        params = {
+          if (trades != null) "trades": trades,
+          if (startTimestamp != null) "start": startTimestamp,
+          if (endTimestamp != null) "end": endTimestamp,
+          if (offset != null) "ofs": offset,
+          if (closeTime != null) "closetime": closeTime.name,
+          if (consolidateTaker != null) "consolidate_taker": consolidateTaker,
+        },
+        scope = Scope.private;
+
+  KrakenRequest.queryOrders({
+    bool? trades,
+    required List<String> txids,
+    bool? consolidateTaker,
+  })  : assert(txids.isNotEmpty),
+        path = "QueryOrders",
+        params = {
+          if (trades != null) "trades": trades,
+          "txid": txids.join(","),
+          if (consolidateTaker != null) "consolidate_taker": consolidateTaker,
+        },
+        scope = Scope.private;
+
+  KrakenRequest.tradeVolume({
+    List<String> pairs = const [],
+  })  : path = "TradeVolume",
+        params = {if (pairs.isNotEmpty) "pair": pairs.join(",")},
+        scope = Scope.private;
+
+  KrakenRequest.addOrder({
+    required OrderType orderType,
+    required OrderDirection direction,
+    required double volume,
+    double? displayVol,
+    required Pair pair,
+    double? price,
+    double? price2,
+    // TODO trigger?
+    String? leverage,
+    bool? reduceOnly,
+    SelfTradePrevention? selfTradePrevention,
+    List<OrderFlag>? flags,
+    TimeInForce? timeInForce,
+    OrderTime? startTime,
+    OrderTime? expireTime,
+    OrderType? closeOrderType,
+    double? closePrice,
+    double? closePrice2,
+    DateTime? deadline,
+    bool? validate,
+  })  : assert(closeOrderType?.closeToo != false),
+        path = "AddOrder",
+        params = {
+          "ordertype": orderType.name,
+          "type": direction.name,
+          "volume": volume,
+          if (displayVol != null) "displayvol": displayVol,
+          "pair": pair.name,
+          if (price != null) "price": price,
+          if (price2 != null) "price2": price2,
+          if (leverage != null) "leverage": leverage,
+          if (reduceOnly != null) "reduce_only": reduceOnly,
+          if (selfTradePrevention != null) "stptype": selfTradePrevention.name,
+          if (flags != null) "oflags": flags.map((f) => f.name).join(","),
+          if (timeInForce != null) "timeinforce": timeInForce.name,
+          if (startTime != null) "starttm": createOrderTime(startTime),
+          if (expireTime != null) "expiretm": createOrderTime(expireTime),
+          if (closeOrderType != null) "close[ordertype]": closeOrderType.name,
+          if (closePrice != null) "close[price]": closePrice,
+          if (closePrice2 != null) "close[price2]": closePrice2,
+          if (deadline != null) "deadline": deadline.toIso8601String(),
+          if (validate != null) "validate": validate,
+        },
+        scope = Scope.private;
+
+  KrakenRequest.addMarketOrder({
+    required OrderDirection direction,
+    required Pair pair,
+    required double volume,
+    OrderTime? startTime,
+    OrderTime? expireTime,
+  })  : path = "AddOrder",
+        params = {
+          "pair": pair.name,
+          "type": direction.name,
+          "ordertype": OrderType.market.name,
+          "volume": volume,
+          if (startTime != null) "starttm": createOrderTime(startTime),
+          if (expireTime != null) "expiretm": createOrderTime(expireTime),
+        },
+        scope = Scope.private;
+
+  KrakenRequest.addLimitOrder({
+    required OrderDirection direction,
+    required Pair pair,
+    required double price,
+    required double volume,
+    OrderTime? startTime,
+    OrderTime? expireTime,
+  })  : path = "AddOrder",
+        params = {
+          "pair": pair.name,
+          "type": direction.name,
+          "ordertype": OrderType.limit.name,
+          "price": price,
+          "volume": volume,
+          if (startTime != null) "starttm": createOrderTime(startTime),
+          if (expireTime != null) "expiretm": createOrderTime(expireTime),
+        },
+        scope = Scope.private;
+
+  KrakenRequest.cancelOrder({
+    required String txid,
+  })  : assert(txid.isNotEmpty),
+        path = "CancelOrder",
+        params = {"txid": txid},
+        scope = Scope.private;
+
+  KrakenRequest.cancelAll()
+      : path = "CancelAll",
+        params = {},
+        scope = Scope.private;
+}
