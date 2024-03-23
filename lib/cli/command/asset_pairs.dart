@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class _AssetPairs extends Command with _AutoCache, _Tabular {
+class AssetPairs extends Command with _AutoCache, _Tabular {
   @override
   String get name => "assetpairs";
 
@@ -10,7 +10,7 @@ class _AssetPairs extends Command with _AutoCache, _Tabular {
   @override
   List<String> get aliases => const ["ap"];
 
-  _AssetPairs() {
+  AssetPairs() {
     initTabularOptions(argParser);
     argParser.addMultiOption(
       "pair",

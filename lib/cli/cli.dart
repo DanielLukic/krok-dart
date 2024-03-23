@@ -15,21 +15,21 @@ part 'options.dart';
 part 'tabular.dart';
 
 run(List<String> args) async {
-  final runner = CommandRunner(
-    "krok",
-    "Execute Kraken API commands.",
-    usageLineLength: 80,
-  );
-
-  _addLogOption(runner.argParser);
-  _addCachedOption(runner.argParser);
-  _addKeyFileOption(runner.argParser);
-
-  runner.addCommand(_AssetPairs());
-  runner.addCommand(_Assets());
-  runner.addCommand(_TickerCommand());
-
   try {
+    final runner = CommandRunner(
+      "krok",
+      "Execute Kraken API commands.",
+      usageLineLength: 80,
+    );
+
+    runner
+      ..addLogOption()
+      ..addCachedOption()
+      ..addKeyFileOption()
+      ..addCommand(AssetPairs())
+      ..addCommand(Assets())
+      ..addCommand(TickerCommand());
+
     await runner.run(args);
   } on UsageException catch (it) {
     print(it);

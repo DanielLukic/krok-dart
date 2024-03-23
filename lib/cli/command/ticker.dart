@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class _TickerCommand extends Command with _AutoCache, _Tabular {
+class TickerCommand extends Command with _AutoCache, _Tabular {
   @override
   String get name => "ticker";
 
@@ -10,7 +10,7 @@ class _TickerCommand extends Command with _AutoCache, _Tabular {
   @override
   List<String> get aliases => const ["t"];
 
-  _TickerCommand() {
+  TickerCommand() {
     initTabularOptions(argParser);
     argParser.addMultiOption(
       "pair",

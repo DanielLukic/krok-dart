@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class _Assets extends Command with _AutoCache, _Tabular {
+class Assets extends Command with _AutoCache, _Tabular {
   @override
   String get name => "assets";
 
@@ -10,7 +10,7 @@ class _Assets extends Command with _AutoCache, _Tabular {
   @override
   List<String> get aliases => const ["a"];
 
-  _Assets() {
+  Assets() {
     initTabularOptions(argParser);
     argParser.addMultiOption(
       "asset",
