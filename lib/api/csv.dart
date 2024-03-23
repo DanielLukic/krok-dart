@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
-import 'package:krok/src/extensions.dart';
+import 'package:krok/common/extensions.dart';
 
 /// Somewhat generic function to dump a [dataMap] as tabular data, picking
 /// the [columns] from [dataMap] and converting each column value to a

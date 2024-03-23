@@ -1,3 +1,3 @@
-import 'package:krok/cli.dart';
+import 'package:krok/cli/cli.dart';
 
 main(List<String> args) async => run(args);

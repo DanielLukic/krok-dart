@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
-import 'package:krok/src/api.dart';
-import 'package:krok/src/csv.dart';
-import 'package:krok/src/extensions.dart';
-import 'package:krok/src/log.dart';
+import 'package:krok/api/api.dart';
+import 'package:krok/api/csv.dart';
+import 'package:krok/common/extensions.dart';
+import 'package:krok/common/log.dart';
 
 part 'auto_cache.dart';
-part 'commands.dart';
+part 'command/assets.dart';
+part 'command/ticker.dart';
 part 'options.dart';
 part 'tabular.dart';
 

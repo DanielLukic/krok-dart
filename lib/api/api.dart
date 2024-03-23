@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
-import 'package:krok/src/extensions.dart';
-import 'package:krok/src/log.dart';
+import 'package:krok/common/extensions.dart';
+import 'package:krok/common/log.dart';
 
-part 'package:krok/src/config.dart';
-part 'package:krok/src/exception.dart';
-part 'package:krok/src/request.dart';
-part 'package:krok/src/types.dart';
+part 'package:krok/api/config.dart';
+part 'package:krok/api/exception.dart';
+part 'package:krok/api/request.dart';
+part 'package:krok/api/types.dart';
 
 class KrakenApi {
   List<String> secret;

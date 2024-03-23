@@ -1,13 +1,22 @@
 part of 'cli.dart';
 
 mixin _Tabular {
+  String format = "table";
   List<String>? columns;
   bool allColumns = false;
-  String format = "table";
+  bool full = false;
 
   bool get tabular => format == "table" || format == "csv";
 
   initTabularOptions(ArgParser argParser) {
+    argParser.addOption(
+      "format",
+      abbr: "f",
+      help: "Select output format. Note that raw and json show all columns.",
+      allowed: ["raw", "json", "csv", "table"],
+      defaultsTo: "table",
+      callback: (it) => format = it ?? format,
+    );
     argParser.addMultiOption(
       "columns",
       abbr: "c",
@@ -22,13 +31,13 @@ mixin _Tabular {
       negatable: false,
       callback: (it) => allColumns = it,
     );
-    argParser.addOption(
-      "format",
-      abbr: "f",
-      help: "Select output format. Note that raw and json show all columns.",
-      allowed: ["raw", "json", "csv", "table"],
-      defaultsTo: "table",
-      callback: (it) => format = it ?? format,
+    argParser.addFlag(
+      "full",
+      help: "Extract full values of selected columns.\n"
+      'Otherwise, only the first ("primary") value is extracted.\n'
+      "Applies only if a column contains list data.",
+      negatable: false,
+      callback: (it) => full = it,
     );
   }
 
@@ -68,7 +77,7 @@ mixin _Tabular {
   }
 
   String _primaryValueOnly(dynamic it) {
-    if (it is List) {
+    if (it is List && it.isNotEmpty && !full) {
       return it[0].toString();
     } else {
       return it.toString();
