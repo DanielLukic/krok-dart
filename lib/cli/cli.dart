@@ -8,6 +8,7 @@ import 'package:krok/common/extensions.dart';
 import 'package:krok/common/log.dart';
 
 part 'auto_cache.dart';
+part 'command/asset_pairs.dart';
 part 'command/assets.dart';
 part 'command/ticker.dart';
 part 'options.dart';
@@ -24,6 +25,7 @@ run(List<String> args) async {
   _addCachedOption(runner.argParser);
   _addKeyFileOption(runner.argParser);
 
+  runner.addCommand(_AssetPairs());
   runner.addCommand(_Assets());
   runner.addCommand(_TickerCommand());
 
