@@ -11,35 +11,47 @@ class KrakenRequest {
         scope = Scope.public;
 
   KrakenRequest.assets({List<Pair>? assets})
-      : assert(assets?.isEmpty != true, "null or at least one asset expected"),
+      : assert(
+          assets.isNullOrNotEmpty,
+          "null or at least one asset expected: $assets",
+        ),
         path = "Assets",
         params = {
-          if (assets != null) "asset": assets.map((a) => a.name).join(","),
+          if (assets != null) "asset": assets.join(","),
         },
         scope = Scope.public;
 
   KrakenRequest.assetPairs({List<Pair>? pairs, AssetPairsInfo? info})
-      : assert(pairs?.isEmpty != true, "null or at least one pair expected"),
+      : assert(
+          pairs.isNullOrNotEmpty,
+          "null or at least one pair expected: $pairs",
+        ),
         path = "AssetPairs",
         params = {
-          if (pairs != null) "pair": pairs.map((a) => a.name).join(","),
+          if (pairs != null) "pair": pairs.join(","),
           if (info != null) "info": info.name,
         },
         scope = Scope.public;
 
   KrakenRequest.ticker({List<Pair>? pairs})
-      : assert(pairs?.isEmpty != true, "null or at least one pair expected"),
+      : assert(
+          pairs.isNullOrNotEmpty,
+          "null or at least one pair expected: $pairs",
+        ),
         path = "Ticker",
         params = {
-          if (pairs != null) "pair": pairs.map((a) => a.name).join(","),
+          if (pairs != null) "pair": pairs.join(","),
         },
         scope = Scope.public;
 
   KrakenRequest.ohlc(List<Pair>? pairs, {OhlcInterval? interval})
-      : assert(pairs?.isEmpty != true, "null or at least one pair expected"),
+      : assert(
+          pairs.isNullOrNotEmpty,
+          "null or at least one pair expected: $pairs",
+        ),
         path = "OHLC",
         params = {
-          if (pairs != null) "pair": pairs.map((a) => a.name).join(","),
+          if (pairs != null) "pair": pairs.join(","),
           if (interval != null) "interval": interval.minutes,
         },
         scope = Scope.public;
@@ -134,7 +146,7 @@ class KrakenRequest {
           "type": direction.name,
           "volume": volume,
           if (displayVol != null) "displayvol": displayVol,
-          "pair": pair.name,
+          "pair": pair,
           if (price != null) "price": price,
           if (price2 != null) "price2": price2,
           if (leverage != null) "leverage": leverage,
@@ -160,7 +172,7 @@ class KrakenRequest {
     OrderTime? expireTime,
   })  : path = "AddOrder",
         params = {
-          "pair": pair.name,
+          "pair": pair,
           "type": direction.name,
           "ordertype": OrderType.market.name,
           "volume": volume,
@@ -178,7 +190,7 @@ class KrakenRequest {
     OrderTime? expireTime,
   })  : path = "AddOrder",
         params = {
-          "pair": pair.name,
+          "pair": pair,
           "type": direction.name,
           "ordertype": OrderType.limit.name,
           "price": price,

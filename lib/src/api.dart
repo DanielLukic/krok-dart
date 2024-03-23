@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
+import 'package:krok/src/extensions.dart';
 import 'package:krok/src/log.dart';
 
 part 'package:krok/src/config.dart';
 part 'package:krok/src/exception.dart';
-part 'package:krok/src/extensions.dart';
 part 'package:krok/src/request.dart';
 part 'package:krok/src/types.dart';
 
@@ -31,29 +31,27 @@ class KrakenApi {
 
   close() => client.close();
 
-  Future<Map<String, dynamic>> assets({List<Pair>? assets}) =>
+  Future<Result> assets({List<Pair>? assets}) =>
       retrieve(KrakenRequest.assets(assets: assets));
 
-  Future<Map<String, dynamic>> assetPairs({List<Pair>? pairs}) =>
+  Future<Result> assetPairs({List<Pair>? pairs}) =>
       retrieve(KrakenRequest.assetPairs(pairs: pairs));
 
-  Future<Map<String, dynamic>> ticker([List<Pair>? pairs]) =>
+  Future<Result> ticker([List<Pair>? pairs]) =>
       retrieve(KrakenRequest.ticker(pairs: pairs));
 
-  Future<Map<String, dynamic>> ohlc(List<Pair> pairs) =>
-      retrieve(KrakenRequest.ohlc(pairs));
+  Future<Result> ohlc(List<Pair> pairs) => retrieve(KrakenRequest.ohlc(pairs));
 
-  Future<Map<String, dynamic>> tradeVolume() =>
-      retrieve(KrakenRequest.tradeVolume());
+  Future<Result> tradeVolume() => retrieve(KrakenRequest.tradeVolume());
 
   /// Retrieves decoded json data from the Kraken API. Takes care of signing for
   /// private requests.
-  Future<Map<String, dynamic>> retrieve(KrakenRequest request) async {
+  Future<Result> retrieve(KrakenRequest request) async {
     final data = switch (request.scope) {
       Scope.public => _public(request),
       Scope.private => _private(request)
     };
-    final Map<String, dynamic> envelope = json.decode(await data);
+    final Result envelope = json.decode(await data);
     final errors = envelope.stringList("error");
     for (var element in errors) {
       if (element.startsWith("E")) {
@@ -62,7 +60,7 @@ class KrakenApi {
         logWarn(element);
       }
     }
-    return envelope["result"] as Map<String, dynamic>;
+    return envelope["result"] as Result;
   }
 
   Future<String> _public(KrakenRequest request) async {
@@ -107,7 +105,7 @@ class KrakenApi {
 
   /// Loads data for a parameterless, public Kraken API call from cache if
   /// available and fresh, otherwise fetches fresh data and caches it.
-  Future<Map<String, dynamic>> load(String path, {Duration? maxAge}) async {
+  Future<Result> load(String path, {Duration? maxAge}) async {
     String? data;
 
     var file = File("cache/$path.json");
@@ -146,4 +144,32 @@ class KrakenApi {
     var info = await request.send();
     return await info.stream.bytesToString();
   }
+}
+
+/// Somewhat horrific cache handling around retrieving data from the Kraken API.
+///
+/// The [key] is used to store the data in a file in the `cache` directory. If
+/// the file is not older than [maxAge], the data is read from the file.
+/// Otherwise, the [retrieve] function is called to get fresh data.
+Future<Result> cached({
+  required String key,
+  required Duration maxAge,
+  required Future<Result> Function() retrieve,
+}) async {
+  Result? result;
+  var file = File("cache/$key.json");
+  if (file.existsSync()) {
+    var stat = file.statSync();
+    if (stat.modified.isFresh(maxAge: maxAge)) {
+      try {
+        result = await file.readAsString().then((s) => jsonDecode(s));
+        logVerbose("loaded cached $key");
+      } on Exception catch (it) {
+        logError("error reading cache - ignored: ${it.runtimeType}");
+      }
+    }
+  }
+  result ??= await retrieve();
+  await file.writeAsString(jsonEncode(result));
+  return result;
 }

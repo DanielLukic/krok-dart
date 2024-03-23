@@ -9,6 +9,7 @@ environment:
   sdk: ^3.3.1
 
 dependencies:
+  args: ^2.4.2
   crypto: ^3.0.1
   http: ^1.2.1
 

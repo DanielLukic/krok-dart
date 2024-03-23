@@ -3,7 +3,9 @@ part of 'api.dart';
 typedef NonceGenerator = int Function();
 
 typedef Asset = String;
+typedef Pair = String;
 typedef Price = double;
+typedef Result = Map<String, dynamic>;
 typedef Volume = double;
 
 var defaultNonceGenerator = () => DateTime.now().millisecondsSinceEpoch;
@@ -77,15 +79,6 @@ enum OrderType {
   final bool closeToo;
 
   const OrderType(this.name, {this.closeToo = true});
-}
-
-class Pair {
-  final Asset left;
-  final Asset right;
-
-  Pair(this.left, this.right);
-
-  String get name => "$left$right";
 }
 
 enum Scope { public, private }

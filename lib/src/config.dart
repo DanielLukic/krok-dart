@@ -14,8 +14,17 @@ class KrakenConfig {
   }
 
   factory KrakenConfig.fromFile(String path) {
+    path = expand(path);
     var file = File(path);
     var lines = file.readAsLinesSync();
     return KrakenConfig(lines[0], lines[1]);
   }
+}
+
+String expand(String path) {
+  if (path.contains("~")) {
+    path = path.replaceFirst(RegExp(r"[^~]*~"), "");
+    path = Platform.environment["HOME"].toString() + path;
+  }
+  return path;
 }
