@@ -10,6 +10,7 @@ import 'package:krok/common/log.dart';
 part 'auto_cache.dart';
 part 'command/asset_pairs.dart';
 part 'command/assets.dart';
+part 'command/system_status.dart';
 part 'command/ticker.dart';
 part 'options.dart';
 part 'tabular.dart';
@@ -28,6 +29,7 @@ run(List<String> args) async {
       ..addKeyFileOption()
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
+      ..addCommand(SystemStatus())
       ..addCommand(TickerCommand());
 
     await runner.run(args);
