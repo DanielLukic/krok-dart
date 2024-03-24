@@ -31,6 +31,16 @@ enum OhlcInterval {
   const OhlcInterval(this.minutes);
 }
 
+extension StringToOhlcInterval on String? {
+  OhlcInterval asOhlcInterval({
+    OhlcInterval defaultValue = OhlcInterval.oneMinute,
+  }) =>
+      OhlcInterval.values.firstWhere(
+        (element) => element.minutes.toString() == this,
+        orElse: () => defaultValue,
+      );
+}
+
 enum OrderDirection { buy, sell }
 
 enum OrderFlag {

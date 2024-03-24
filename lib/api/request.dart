@@ -44,15 +44,15 @@ class KrakenRequest {
         },
         scope = Scope.public;
 
-  KrakenRequest.ohlc(List<Pair>? pairs, {OhlcInterval? interval})
-      : assert(
-          pairs.isNullOrNotEmpty,
-          "null or at least one pair expected: $pairs",
-        ),
-        path = "OHLC",
+  KrakenRequest.ohlc({
+    required Pair pair,
+    OhlcInterval? interval,
+    DateTime? since,
+  })  : path = "OHLC",
         params = {
-          if (pairs != null) "pair": pairs.join(","),
+          "pair": pair,
           if (interval != null) "interval": interval.minutes,
+          if (since != null) "since": since.millisecondsSinceEpoch ~/ 1000,
         },
         scope = Scope.public;
 

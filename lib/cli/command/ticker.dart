@@ -32,7 +32,7 @@ class TickerCommand extends Command with _AutoCache, _Tabular {
         cacheIf: pairs.isNullOrEmpty,
         retrieve: () => api.retrieve(KrakenRequest.ticker(pairs: pairs)),
       );
-      processTabularData(result);
+      processResultMapOfMaps(result);
     } finally {
       api.close();
     }

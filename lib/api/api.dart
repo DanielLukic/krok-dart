@@ -40,7 +40,7 @@ class KrakenApi {
   Future<Result> ticker([List<Pair>? pairs]) =>
       retrieve(KrakenRequest.ticker(pairs: pairs));
 
-  Future<Result> ohlc(List<Pair> pairs) => retrieve(KrakenRequest.ohlc(pairs));
+  Future<Result> ohlc(Pair pair) => retrieve(KrakenRequest.ohlc(pair: pair));
 
   Future<Result> tradeVolume() => retrieve(KrakenRequest.tradeVolume());
 
@@ -69,7 +69,7 @@ class KrakenApi {
     var url = Uri.parse('https://api.kraken.com/0/public/${request.path}')
         .replace(queryParameters: params);
     var get = Request('GET', url);
-    logVerbose("sending request $url: ${get.body}");
+    logVerbose("sending request $url");
     var info = await client.send(get);
     return await info.stream.bytesToString();
   }

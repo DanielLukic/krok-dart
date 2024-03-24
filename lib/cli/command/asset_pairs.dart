@@ -32,7 +32,7 @@ class AssetPairs extends Command with _AutoCache, _Tabular {
         cacheIf: pairs.isNullOrEmpty,
         retrieve: () => api.retrieve(KrakenRequest.assetPairs(pairs: pairs)),
       );
-      processTabularData(result);
+      processResultMapOfMaps(result);
     } finally {
       api.close();
     }

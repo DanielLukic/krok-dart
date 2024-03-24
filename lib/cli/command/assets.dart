@@ -32,7 +32,7 @@ class Assets extends Command with _AutoCache, _Tabular {
         cacheIf: assets.isNullOrEmpty,
         retrieve: () => api.retrieve(KrakenRequest.assets(assets: assets)),
       );
-      processTabularData(result);
+      processResultMapOfMaps(result);
     } finally {
       api.close();
     }

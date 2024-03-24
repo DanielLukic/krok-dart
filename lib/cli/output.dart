@@ -21,7 +21,7 @@ dumpTable(
 
 /// Pad data from inner list to same length, with single space plus | as table
 /// divider around each cell. Insert a - line after the first row if [headerDivider].
-List<String> formatTable(List<List<String>> rows, [bool headerDivider = true]) {
+List<String> formatTable(List<List<String>> rows, {bool headerDivider = true}) {
   int toStringLength(String it) => it.length;
 
   final allColumns = rows.first; // pair + dataColumns

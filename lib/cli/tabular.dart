@@ -55,6 +55,50 @@ mixin _Tabular {
   }
 
   processTabularData(Result result) {
+    if (result.length != 1) {
+      throw ArgumentError("single entry map required", "result");
+    }
+    var data = result.entries.first.value;
+    if (data is Map<String, dynamic>) {
+      return processResultMap(data);
+    } else if (data is List) {
+      return processResultList(data);
+    } else {
+      throw ArgumentError("unknown entry type: $result", "result");
+    }
+  }
+
+  processResultList(List<dynamic> result) {
+    final raw = result.map((e) => e as List<dynamic>);
+    final data = raw.map((e) => e.map((e) => e.toString()).toList()).toList();
+    switch (format) {
+      case OutputFormat.raw:
+        result.forEach(print);
+      case OutputFormat.json:
+        for (final row in result) {
+          print(jsonEncode(row));
+        }
+      case OutputFormat.csv:
+        formatCsv(data).forEach(print);
+      case OutputFormat.table:
+        formatTable(data, headerDivider: false).forEach(print);
+    }
+  }
+
+  processResultMap(Result result) {
+    switch (format) {
+      case OutputFormat.raw:
+        print(result);
+      case OutputFormat.json:
+        print(jsonEncode(result));
+      case OutputFormat.csv:
+        formatCsv(result.asTableData()).forEach(print);
+      case OutputFormat.table:
+        formatTable(result.asTableData(), headerDivider: false).forEach(print);
+    }
+  }
+
+  processResultMapOfMaps(Result result, {String keyColumn = "pair"}) {
     // auto-select all columns if "--table" without "--columns":
     if (columns == null && tabular) allColumns = true;
 
@@ -63,13 +107,13 @@ mixin _Tabular {
 
     switch (format) {
       case OutputFormat.csv:
-        dumpCsv("pair", selected!, result, _primaryValueOnly);
+        dumpCsv(keyColumn, selected!, result, _primaryValueOnly);
       case OutputFormat.json:
         dumpJson(result);
       case OutputFormat.raw:
         dumpByKey(result);
       case OutputFormat.table:
-        dumpTable("pair", selected!, result, _primaryValueOnly);
+        dumpTable(keyColumn, selected!, result, _primaryValueOnly);
     }
   }
 
