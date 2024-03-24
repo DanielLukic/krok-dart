@@ -102,24 +102,58 @@ mixin Tabular {
     }
   }
 
-  processResultMapOfMaps(Result result, {String keyColumn = "pair"}) {
+  processResultMapOfMaps(
+    Result result, {
+    String keyColumn = "pair",
+    bool autoFormatDateTime = true,
+    bool primaryListValueOnly = true,
+  }) {
+    // this is crazy... revisit ^^
+
     // auto-select all columns if "--table" without "--columns":
     if (columns == null && tabular) allColumns = true;
 
     var selected = columns;
     if (allColumns) selected = _findAllColumns(result);
 
-    switch (format) {
-      case OutputFormat.csv:
-        dumpCsv(keyColumn, selected!, result, _primaryValueOnly);
-      case OutputFormat.json:
-        dumpJson(result);
-      case OutputFormat.raw:
-        dumpByKey(result);
-      case OutputFormat.table:
-        dumpTable(keyColumn, selected!, result, _primaryValueOnly);
+    if (format case OutputFormat.json) {
+      dumpJson(result);
+      return;
+    } else if (format case OutputFormat.raw) {
+      dumpByKey(result);
+      return;
+    }
+
+    final convert = primaryListValueOnly ? _primaryValueOnly : (it) => it.toString();
+    var rows = asTableData(keyColumn, selected!, result, convert);
+    if (autoFormatDateTime) rows = modifyDateTimeColumns(rows);
+
+    if (format case OutputFormat.csv) {
+      formatCsv(rows).forEach(print);
+    } else if (format case OutputFormat.table) {
+      formatTable(rows).forEach(print);
     }
   }
+
+  List<List<String>> modifyDateTimeColumns(List<List<String>> rows) {
+    final columns = rows.first.indexWhere_((it) => it.endsWith("tm"));
+    final header = rows.removeAt(0);
+    rows = [header, ...rows.map((row) => modifyDateTimeInPlace(columns, row))];
+    return rows;
+  }
+
+  List<String> modifyDateTimeInPlace(List<int> todo, List<String> row) {
+    for (final column in todo) {
+      if (row[column] == "0") {
+        row.modify(column, (p0) => "");
+      } else {
+        row.modify(column, (p0) => _toKrakenDateTime(p0) ?? "");
+      }
+    }
+    return row;
+  }
+
+  String? _toKrakenDateTime(dynamic it) => double.tryParse(it)?.toKrakenDateTime().toString();
 
   List<String>? _findAllColumns(Result result) {
     final merged = result.entries.map((e) => e.value.keys);

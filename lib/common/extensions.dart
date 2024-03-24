@@ -98,6 +98,10 @@ extension MapToTable on Map<String, dynamic> {
   }
 }
 
+extension DoubleToKrakenDateTime on double {
+  DateTime toKrakenDateTime() => DateTime.fromMillisecondsSinceEpoch((this * 1000).toInt(), isUtc: true);
+}
+
 extension IntToKrakenDateTime on int {
   DateTime toKrakenDateTime() => DateTime.fromMillisecondsSinceEpoch(this * 1000, isUtc: true);
 }
@@ -135,6 +139,8 @@ extension StringToRelativeDateTime on String? {
   }
 }
 
-extension ListReverse<T> on List<T> {
+extension ListOfT<T> on List<T> {
   List<T> reverse() => reversed.toList();
+
+  List<int> indexWhere_(bool Function(T) select) => indexed.where((it) => select(it.$2)).map((e) => e.$1).toList();
 }

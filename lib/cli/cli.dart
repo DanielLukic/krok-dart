@@ -12,6 +12,7 @@ part 'command/asset_pairs.dart';
 part 'command/assets.dart';
 part 'command/balance.dart';
 part 'command/ohlc.dart';
+part 'command/orders.dart';
 part 'command/spread.dart';
 part 'command/system_status.dart';
 part 'command/ticker.dart';
@@ -38,6 +39,7 @@ run(List<String> args) async {
       ..addCommand(Assets())
       ..addCommand(Balance())
       ..addCommand(Ohlc())
+      ..addCommand(OpenOrders())
       ..addCommand(Spread())
       ..addCommand(SystemStatus())
       ..addCommand(Ticker())

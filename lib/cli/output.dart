@@ -30,10 +30,8 @@ List<String> formatTable(List<List<String>> rows, {bool headerDivider = true}) {
     (column) => rows.extractColumn(column).map(toStringLength).toMax(),
   );
 
-  String reformat(List<String> row, List<int> columnLengths) => [
-        for (var i = 0; i < allColumns.length; i++)
-          " ${row[i].padRight(columnLengths[i])} |"
-      ].join("");
+  String reformat(List<String> row, List<int> columnLengths) =>
+      [for (var i = 0; i < allColumns.length; i++) " ${row[i].padRight(columnLengths[i])} |"].join("");
 
   final formatted = rows
       .map(
@@ -48,8 +46,7 @@ List<String> formatTable(List<List<String>> rows, {bool headerDivider = true}) {
   return formatted;
 }
 
-List<String> formatCsv(List<List<String>> rows) =>
-    rows.map((row) => row.join(",")).toList();
+List<String> formatCsv(List<List<String>> rows) => rows.map((row) => row.join(",")).toList();
 
 /// See [dumpTable]. Same logic, but unformatted CSV output.
 dumpCsv(
@@ -68,14 +65,13 @@ dumpCsv(
 List<List<String>> asTableData(
   String keyColumn,
   List<String> columns,
-  Map<String, dynamic> resultMap,
+  Map<String, dynamic> resultMap, [
   String Function(dynamic)? toString,
-) {
+]) {
   toString ??= (it) => it.toString();
   return [
     [keyColumn, ...columns],
-    for (var entry in resultMap.entries)
-      [entry.key, ...entry.pick(columns).map(toString)]
+    for (var entry in resultMap.entries) [entry.key, ...entry.pick(columns).map(toString)]
   ].toList();
 }
 
