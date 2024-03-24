@@ -75,3 +75,10 @@ extension ListNullOrEmpty on List<dynamic>? {
 
   bool get isNullOrNotEmpty => this?.isNotEmpty ?? true;
 }
+
+extension MapToTable on Map<String, dynamic> {
+  List<List<String>> asTableData() => [
+        keys.toList(),
+        values.map((e) => e.toString()).toList(),
+      ].toList();
+}

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
 import 'package:krok/api/api.dart';
-import 'package:krok/api/csv.dart';
+import 'package:krok/common/output.dart';
 import 'package:krok/common/extensions.dart';
 import 'package:krok/common/log.dart';
 

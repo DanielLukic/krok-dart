@@ -1,12 +1,25 @@
 part of 'cli.dart';
 
+enum OutputFormat { csv, json, raw, table }
+
+extension on String? {
+  OutputFormat asOutputFormat({
+    OutputFormat defaultValue = OutputFormat.table,
+  }) =>
+      OutputFormat.values.firstWhere(
+        (it) => it.name.toLowerCase() == this?.toLowerCase(),
+        orElse: () => defaultValue,
+      );
+}
+
 mixin _Tabular {
-  String format = "table";
+  OutputFormat format = OutputFormat.table;
   List<String>? columns;
   bool allColumns = false;
   bool full = false;
 
-  bool get tabular => format == "table" || format == "csv";
+  bool get tabular =>
+      format == OutputFormat.table || format == OutputFormat.csv;
 
   initTabularOptions(ArgParser argParser) {
     argParser.addOption(
@@ -15,7 +28,7 @@ mixin _Tabular {
       help: "Select output format. Note that raw and json show all columns.",
       allowed: ["raw", "json", "csv", "table"],
       defaultsTo: "table",
-      callback: (it) => format = it ?? format,
+      callback: (it) => format = it.asOutputFormat(defaultValue: format),
     );
     argParser.addMultiOption(
       "columns",
@@ -34,8 +47,8 @@ mixin _Tabular {
     argParser.addFlag(
       "full",
       help: "Extract full values of selected columns.\n"
-      'Otherwise, only the first ("primary") value is extracted.\n'
-      "Applies only if a column contains list data.",
+          'Otherwise, only the first ("primary") value is extracted.\n'
+          "Applies only if a column contains list data.",
       negatable: false,
       callback: (it) => full = it,
     );
@@ -48,24 +61,15 @@ mixin _Tabular {
     var selected = columns;
     if (allColumns) selected = _findAllColumns(result);
 
-    if (selected != null) {
-      if (format == "table") {
-        dumpTable("pair", selected, result, _primaryValueOnly);
-        return;
-      } else if (format == "csv") {
-        dumpCsv("pair", selected, result, _primaryValueOnly);
-        return;
-      }
-    }
-
-    if (format == "json") {
-      for (final entry in result.entries) {
-        final key = entry.key;
-        final json = jsonEncode(entry.value);
-        print("$key: $json");
-      }
-    } else {
-      dumpByKey(result);
+    switch (format) {
+      case OutputFormat.csv:
+        dumpCsv("pair", selected!, result, _primaryValueOnly);
+      case OutputFormat.json:
+        dumpJson(result);
+      case OutputFormat.raw:
+        dumpByKey(result);
+      case OutputFormat.table:
+        dumpTable("pair", selected!, result, _primaryValueOnly);
     }
   }
 

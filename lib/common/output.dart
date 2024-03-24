@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
+import 'dart:convert';
+
 import 'package:krok/common/extensions.dart';
 
 /// Somewhat generic function to dump a [dataMap] as tabular data, picking
@@ -13,9 +15,14 @@ dumpTable(
   Map<String, dynamic> dataMap,
   String Function(dynamic)? toString,
 ) {
-  int toStringLength(String it) => it.length;
-
   final rows = asTableData(keyColumn, columns, dataMap, toString);
+  formatTable(rows).forEach(print);
+}
+
+/// Pad data from inner list to same length, with single space plus | as table
+/// divider around each cell. Insert a - line after the first row if [headerDivider].
+List<String> formatTable(List<List<String>> rows, [bool headerDivider = true]) {
+  int toStringLength(String it) => it.length;
 
   final allColumns = rows.first; // pair + dataColumns
   final columnLengths = List.generate(
@@ -34,9 +41,15 @@ dumpTable(
       )
       .toList();
 
-  formatted.insert(1, "".padLeft(formatted.first.length, "-"));
-  formatted.forEach(print);
+  if (headerDivider) {
+    formatted.insert(1, "".padLeft(formatted.first.length, "-"));
+  }
+
+  return formatted;
 }
+
+List<String> formatCsv(List<List<String>> rows) =>
+    rows.map((row) => row.join(",")).toList();
 
 /// See [dumpTable]. Same logic, but unformatted CSV output.
 dumpCsv(
@@ -45,8 +58,8 @@ dumpCsv(
   Map<String, dynamic> resultMap, [
   String Function(dynamic)? toString,
 ]) {
-  csv(List row) => row.join(",");
-  asTableData(keyColumn, columns, resultMap, toString).map(csv).forEach(print);
+  final rows = asTableData(keyColumn, columns, resultMap, toString);
+  formatCsv(rows).forEach(print);
 }
 
 /// Convert the [resultMap] into a list of lists using the given [columns].
@@ -64,6 +77,14 @@ List<List<String>> asTableData(
     for (var entry in resultMap.entries)
       [entry.key, ...entry.pick(columns).map(toString)]
   ].toList();
+}
+
+dumpJson(Map<String, dynamic> resultMap) {
+  for (final entry in resultMap.entries) {
+    final key = entry.key;
+    final json = jsonEncode(entry.value);
+    print("$key: $json");
+  }
 }
 
 /// Dumb output of [resultMap] by printing each key plus the value in a line.
