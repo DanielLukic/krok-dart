@@ -15,6 +15,7 @@ part 'command/ohlc.dart';
 part 'command/spread.dart';
 part 'command/system_status.dart';
 part 'command/ticker.dart';
+part 'command/tradebalance.dart';
 part 'options.dart';
 part 'pair.dart';
 part 'public_call.dart';
@@ -39,7 +40,8 @@ run(List<String> args) async {
       ..addCommand(Ohlc())
       ..addCommand(Spread())
       ..addCommand(SystemStatus())
-      ..addCommand(Ticker());
+      ..addCommand(Ticker())
+      ..addCommand(TradeBalance());
 
     await runner.run(args);
   } on UsageException catch (it) {

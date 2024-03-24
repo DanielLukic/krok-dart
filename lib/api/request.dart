@@ -76,7 +76,7 @@ class KrakenRequest {
         params = {},
         scope = Scope.private;
 
-  KrakenRequest.tradeBalance({String? baseAsset})
+  KrakenRequest.tradeBalance({Asset? baseAsset})
       : path = "TradeBalance",
         params = {if (baseAsset != null) "asset": baseAsset},
         scope = Scope.private;
