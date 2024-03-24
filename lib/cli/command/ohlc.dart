@@ -44,6 +44,4 @@ class Ohlc extends Command with AutoCache, Pair, ApiCall, Since, Tabular {
       processResultList(timestamped.reverse());
     }
   }
-
-  List<dynamic> firstColumnToDateTime(List<dynamic> e) => e.modify<int>(0, (it) => it.toKrakenDateTime());
 }

@@ -30,6 +30,4 @@ class Balance extends Command with AutoCache, ApiCall, Tabular {
     final data = filtered.asVerticalTableData(["pair", "volume"]);
     processResultList(data);
   }
-
-  List<dynamic> firstColumnToDateTime(List<dynamic> e) => e.modify<int>(0, (it) => it.toKrakenDateTime());
 }

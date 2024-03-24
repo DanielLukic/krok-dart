@@ -20,6 +20,8 @@ mixin Tabular {
 
   bool get tabular => format == OutputFormat.table || format == OutputFormat.csv;
 
+  List<dynamic> firstColumnToDateTime(List<dynamic> e) => e.modify<int>(0, (it) => it.toKrakenDateTime());
+
   initTabularOptions(ArgParser argParser) {
     argParser.addOption(
       "format",
