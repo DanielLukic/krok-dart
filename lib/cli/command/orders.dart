@@ -1,6 +1,8 @@
 part of '../cli.dart';
 
-class OpenOrders extends Command with AutoCache, ApiCall, Tabular {
+enum DescriptionMode { expand, hide, keep, noorder, order }
+
+class OpenOrders extends Command with ApiCall, Tabular {
   @override
   String get name => "openorders";
 

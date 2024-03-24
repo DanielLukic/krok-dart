@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class Balance extends Command with AutoCache, ApiCall, Tabular {
+class Balance extends Command with ApiCall, Tabular {
   @override
   String get name => "balance";
 

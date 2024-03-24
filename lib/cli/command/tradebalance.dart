@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class TradeBalance extends Command with AutoCache, ApiCall, Tabular {
+class TradeBalance extends Command with ApiCall, Tabular {
   @override
   String get name => "tradebalance";
 
