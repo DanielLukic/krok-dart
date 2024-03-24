@@ -24,7 +24,15 @@ class OpenOrders extends Command with AutoCache, ApiCall, Tabular {
 
   @override
   autoClose(KrakenApi api) async {
-    final Result result = (await api.retrieve(KrakenRequest.openOrders(trades: showTrades)))["open"];
+    final Result result = (await api.retrieve(KrakenRequest.openOrders(
+      trades: showTrades,
+    )))["open"];
     processResultMapOfMaps(result, keyColumn: "txid");
+  }
+
+  @override
+  TabularData postProcessRows(TabularData rows) {
+    final modified = modifyDateTimeColumns(rows);
+    return super.postProcessRows(modified);
   }
 }

@@ -1,5 +1,7 @@
 part of 'cli.dart';
 
+typedef TabularData = List<List<String>>;
+
 enum OutputFormat { csv, json, raw, table }
 
 extension on String? {
@@ -12,6 +14,8 @@ extension on String? {
       );
 }
 
+/// Note the strategy pattern: [preProcess], [preProcessRow], [postProcessRows], [postProcess] can be overridden to
+/// modify the output.
 mixin Tabular {
   OutputFormat format = OutputFormat.table;
   List<String>? columns;
@@ -20,7 +24,8 @@ mixin Tabular {
 
   bool get tabular => format == OutputFormat.table || format == OutputFormat.csv;
 
-  List<dynamic> firstColumnToDateTime(List<dynamic> e) => e.modify<int>(0, (it) => it.toKrakenDateTime());
+  List<dynamic> firstColumnToDateTime(List<dynamic> e) =>
+      e.modify<int>(0, (it) => it.toKrakenDateTime());
 
   initTabularOptions(ArgParser argParser) {
     argParser.addOption(
@@ -102,12 +107,7 @@ mixin Tabular {
     }
   }
 
-  processResultMapOfMaps(
-    Result result, {
-    String keyColumn = "pair",
-    bool autoFormatDateTime = true,
-    bool primaryListValueOnly = true,
-  }) {
+  processResultMapOfMaps(Result result, {String keyColumn = "pair"}) {
     // this is crazy... revisit ^^
 
     // auto-select all columns if "--table" without "--columns":
@@ -124,9 +124,8 @@ mixin Tabular {
       return;
     }
 
-    final convert = primaryListValueOnly ? _primaryValueOnly : (it) => it.toString();
-    var rows = asTableData(keyColumn, selected!, result, convert);
-    if (autoFormatDateTime) rows = modifyDateTimeColumns(rows);
+    var rows = asTableData(keyColumn, selected!, result);
+    rows = postProcessRows(rows);
 
     if (format case OutputFormat.csv) {
       formatCsv(rows).forEach(print);
@@ -138,22 +137,22 @@ mixin Tabular {
   List<List<String>> modifyDateTimeColumns(List<List<String>> rows) {
     final columns = rows.first.indexWhere_((it) => it.endsWith("tm"));
     final header = rows.removeAt(0);
-    rows = [header, ...rows.map((row) => modifyDateTimeInPlace(columns, row))];
+    rows = [header, ...rows.map((row) => _modifyDateTimeInPlace(columns, row))];
     return rows;
   }
 
-  List<String> modifyDateTimeInPlace(List<int> todo, List<String> row) {
+  List<String> _modifyDateTimeInPlace(List<int> todo, List<String> row) {
     for (final column in todo) {
       if (row[column] == "0") {
         row.modify(column, (p0) => "");
       } else {
-        row.modify(column, (p0) => _toKrakenDateTime(p0) ?? "");
+        row.modify(column, (p0) => toKrakenDateTime(p0));
       }
     }
     return row;
   }
 
-  String? _toKrakenDateTime(dynamic it) => double.tryParse(it)?.toKrakenDateTime().toString();
+  String toKrakenDateTime(dynamic it) => double.tryParse(it)?.toKrakenDateTime().toString() ?? "";
 
   List<String>? _findAllColumns(Result result) {
     final merged = result.entries.map((e) => e.value.keys);
@@ -162,11 +161,53 @@ mixin Tabular {
     }.toList();
   }
 
-  String _primaryValueOnly(dynamic it) {
+  String primaryValueOnly(dynamic it) {
     if (it is List && it.isNotEmpty && !full) {
       return it[0].toString();
     } else {
       return it.toString();
     }
   }
+
+  /// Convert the [resultMap] into a list of lists using the given [columns].
+  /// The first column uses the keys from [resultMap] with [keyColumn] as name.
+  /// [preProcessRow] and [preProcess] are applied to convert all column values into [String]s.
+  List<List<String>> asTableData(
+    String keyColumn,
+    List<String> columns,
+    Map<String, dynamic> resultMap,
+  ) {
+    final header = [keyColumn, ...columns];
+    final unprocessed = [
+      for (var entry in resultMap.entries) [entry.key, ...entry.pick(columns)]
+    ];
+    return [header, for (var row in unprocessed) preProcessRow(row, header)];
+  }
+
+  /// Calls [preProcess] on each value and converts the row to a list of strings. Override if
+  /// specific processing is needed.
+  List<String> preProcessRow(List<dynamic> row, List<String> header) {
+    assert(row.length == header.length, "row/header mismatch: $row / $header");
+    return [for (var i = 0; i < header.length; i++) preProcess(row[i], header[i])];
+  }
+
+  /// Override to customize string conversion for specific columns.
+  String preProcess(value, String column) => full ? value.toString() : primaryValueOnly(value);
+
+  /// Calls [postProcessRow] for each row, converting all values into strings. Override to customize
+  /// output.
+  TabularData postProcessRows(TabularData rows) {
+    final header = rows.removeAt(0);
+    rows = [header, ...rows.map((row) => postProcessRow(row, header))];
+    return rows;
+  }
+
+  /// Calls [postProcess] for each value/column pair. Override if specific processing is needed.
+  List<String> postProcessRow(List<String> row, List<String> header) {
+    assert(row.length == header.length, "row/header mismatch: $row / $header");
+    return [for (int i = 0; i < row.length; i++) postProcess(row[i], header[i])];
+  }
+
+  /// Override to customize string conversion for specific columns.
+  String postProcess(String value, String column) => value;
 }
