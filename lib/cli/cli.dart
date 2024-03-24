@@ -35,11 +35,11 @@ run(List<String> args) async {
       ..addKeyFileOption()
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
-      ..addCommand(BalanceCommand())
-      ..addCommand(OhlcCommand())
-      ..addCommand(SpreadCommand())
+      ..addCommand(Balance())
+      ..addCommand(Ohlc())
+      ..addCommand(Spread())
       ..addCommand(SystemStatus())
-      ..addCommand(TickerCommand());
+      ..addCommand(Ticker());
 
     await runner.run(args);
   } on UsageException catch (it) {

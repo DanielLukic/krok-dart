@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class OhlcCommand extends Command with AutoCache, Pair, ApiCall, Since, Tabular {
+class Ohlc extends Command with AutoCache, Pair, ApiCall, Since, Tabular {
   @override
   String get name => "ohlc";
 
@@ -10,7 +10,7 @@ class OhlcCommand extends Command with AutoCache, Pair, ApiCall, Since, Tabular 
   @override
   List<String> get aliases => const ["o"];
 
-  OhlcCommand() {
+  Ohlc() {
     initTabularOptions(argParser);
     initSinceOption(argParser);
     initPairOption(argParser);

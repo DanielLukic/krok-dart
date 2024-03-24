@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class SpreadCommand extends Command with AutoCache, Pair, ApiCall, Since, Tabular {
+class Spread extends Command with AutoCache, Pair, ApiCall, Since, Tabular {
   @override
   String get name => "spread";
 
@@ -10,7 +10,7 @@ class SpreadCommand extends Command with AutoCache, Pair, ApiCall, Since, Tabula
   @override
   List<String> get aliases => const ["sp"];
 
-  SpreadCommand() {
+  Spread() {
     initTabularOptions(argParser);
     initSinceOption(argParser);
     initPairOption(argParser);

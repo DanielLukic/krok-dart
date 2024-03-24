@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class BalanceCommand extends Command with AutoCache, ApiCall, Tabular {
+class Balance extends Command with AutoCache, ApiCall, Tabular {
   @override
   String get name => "balance";
 
@@ -10,7 +10,7 @@ class BalanceCommand extends Command with AutoCache, ApiCall, Tabular {
   @override
   List<String> get aliases => const ["b"];
 
-  BalanceCommand() {
+  Balance() {
     initTabularOptions(argParser);
     argParser.addFlag(
       "small",
