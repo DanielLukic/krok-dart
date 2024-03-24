@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class OhlcCommand extends Command with _AutoCache, _Since, _Tabular {
+class OhlcCommand extends Command with _AutoCache, _Pair, _Since, _Tabular {
   @override
   String get name => "ohlc";
 
@@ -13,14 +13,7 @@ class OhlcCommand extends Command with _AutoCache, _Since, _Tabular {
   OhlcCommand() {
     initTabularOptions(argParser);
     initSinceOption(argParser);
-    argParser.addOption(
-      "pair",
-      abbr: "p",
-      help: "The pair to get data for.",
-      mandatory: true,
-      valueHelp: "XBTUSD",
-      callback: (it) => pair = it!,
-    );
+    initPairOption(argParser);
     argParser.addOption(
       "interval",
       abbr: "i",
@@ -32,7 +25,6 @@ class OhlcCommand extends Command with _AutoCache, _Since, _Tabular {
     );
   }
 
-  late String pair;
   OhlcInterval interval = OhlcInterval.oneMinute;
 
   @override

@@ -15,6 +15,7 @@ part 'command/spread.dart';
 part 'command/system_status.dart';
 part 'command/ticker.dart';
 part 'options.dart';
+part 'pair.dart';
 part 'since.dart';
 part 'tabular.dart';
 

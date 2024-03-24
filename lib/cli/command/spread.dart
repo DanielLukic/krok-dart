@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class SpreadCommand extends Command with _AutoCache, _Since, _Tabular {
+class SpreadCommand extends Command with _AutoCache, _Pair, _Since, _Tabular {
   @override
   String get name => "spread";
 
@@ -13,17 +13,8 @@ class SpreadCommand extends Command with _AutoCache, _Since, _Tabular {
   SpreadCommand() {
     initTabularOptions(argParser);
     initSinceOption(argParser);
-    argParser.addOption(
-      "pair",
-      abbr: "p",
-      help: "The pair to get data for.",
-      mandatory: true,
-      valueHelp: "XBTUSD",
-      callback: (it) => pair = it!,
-    );
+    initPairOption(argParser);
   }
-
-  late String pair;
 
   @override
   Future<void> run() async {

@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class AssetPairs extends Command with _AutoCache, _Tabular {
+class AssetPairs extends Command with _AutoCache, _Pairs, _Tabular {
   @override
   String get name => "assetpairs";
 
@@ -12,16 +12,8 @@ class AssetPairs extends Command with _AutoCache, _Tabular {
 
   AssetPairs() {
     initTabularOptions(argParser);
-    argParser.addMultiOption(
-      "pair",
-      abbr: "p",
-      help: "One ore more pairs to get ticker info for. Or all pairs if empty.",
-      valueHelp: "XBTUSD,ETHUSD",
-      callback: (it) => pairs = it.isNullOrEmpty ? null : it,
-    );
+    initPairsOption(argParser);
   }
-
-  List<String>? pairs;
 
   @override
   Future<void> run() async {
