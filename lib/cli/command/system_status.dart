@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class SystemStatus extends Command with PublicCall {
+class SystemStatus extends Command with ApiCall {
   @override
   String get name => "status";
 

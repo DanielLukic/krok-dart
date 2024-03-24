@@ -1,6 +1,6 @@
 part of 'cli.dart';
 
-abstract mixin class PublicCall {
+abstract mixin class ApiCall {
   autoClose(KrakenApi api);
 
   run() async {

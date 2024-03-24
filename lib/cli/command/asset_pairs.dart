@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class AssetPairs extends Command with AutoCache, Pairs, PublicCall, Tabular {
+class AssetPairs extends Command with AutoCache, Pairs, ApiCall, Tabular {
   @override
   String get name => "assetpairs";
 
