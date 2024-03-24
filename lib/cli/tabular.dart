@@ -108,7 +108,8 @@ mixin Tabular {
   }
 
   processResultMapOfMaps(Result result, {String keyColumn = "pair"}) {
-    // this is crazy... revisit ^^
+    // TODO less crazy after the pre/post-processing extraction
+    // TODO extract the column selection next to fix "descr" handling
 
     // auto-select all columns if "--table" without "--columns":
     if (columns == null && tabular) allColumns = true;
@@ -181,13 +182,16 @@ mixin Tabular {
     final unprocessed = [
       for (var entry in resultMap.entries) [entry.key, ...entry.pick(columns)]
     ];
-    return [header, for (var row in unprocessed) preProcessRow(row, header)];
+    return preProcessRows(header, unprocessed);
   }
+
+  List<List<String>> preProcessRows(List<String> header, List<List<dynamic>> unprocessed) =>
+      [header, for (var row in unprocessed) preProcessRow(row, header)];
 
   /// Calls [preProcess] on each value and converts the row to a list of strings. Override if
   /// specific processing is needed.
   List<String> preProcessRow(List<dynamic> row, List<String> header) {
-    assert(row.length == header.length, "row/header mismatch: $row / $header");
+    assert(row.length == header.length, "row/header mismatch: ${row.length} / ${header.length}");
     return [for (var i = 0; i < header.length; i++) preProcess(row[i], header[i])];
   }
 

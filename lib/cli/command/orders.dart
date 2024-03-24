@@ -2,7 +2,76 @@ part of '../cli.dart';
 
 enum DescriptionMode { expand, hide, keep, noorder, order }
 
-class OpenOrders extends Command with ApiCall, Tabular {
+// TODO auto-select descr if mode != hide and columns selected
+
+abstract mixin class Description {
+  DescriptionMode descriptionMode = DescriptionMode.hide;
+
+  initDescriptionOption(ArgParser argParser) {
+    argParser.addOption(
+      "description",
+      abbr: "d",
+      help: "How to handle the descr(iption) column.",
+      allowed: DescriptionMode.values.asNameMap().keys,
+      defaultsTo: descriptionMode.name,
+      allowedHelp: DescriptionMode.values.asNameMap().mapValues(
+            (it) => switch (it as DescriptionMode) {
+              DescriptionMode.expand => "Expand description into columns.",
+              DescriptionMode.hide => "Remove the description column.",
+              DescriptionMode.keep => "Keep description as is.",
+              DescriptionMode.order => "Replace description column with its order value.",
+              DescriptionMode.noorder => "Expand description into columns, omitting order.",
+            },
+          ),
+      callback: (it) => descriptionMode = DescriptionMode.values.asNameMap()[it] ?? descriptionMode,
+    );
+  }
+
+  void updateDescription(List<String> header, List<List<dynamic>> rows, DescriptionMode mode) {
+    if (!header.contains("descr")) return;
+
+    switch (mode) {
+      case DescriptionMode.expand:
+        _expand(header, rows, (it) => true);
+
+      case DescriptionMode.hide:
+        final column = header.indexOf("descr");
+        for (final row in rows) {
+          row.removeAt(column);
+        }
+        header.removeAt(column);
+
+      case DescriptionMode.keep:
+        break;
+
+      case DescriptionMode.noorder:
+        _expand(header, rows, (it) => it != "order");
+
+      case DescriptionMode.order:
+        _expand(header, rows, (it) => it == "order");
+    }
+  }
+
+  void _expand(List<String> header, List<dynamic> rows, bool Function(String) selectColumn) {
+    final column = header.indexOf("descr");
+    var headerUpdated = false;
+    for (final List row in rows) {
+      final description = row.removeAt(column) as Result;
+      if (!headerUpdated) header.removeAt(column);
+
+      final columns = description.keys.toList();
+      for (var key in columns) {
+        if (!selectColumn(key)) continue;
+        if (!headerUpdated) header.add("_$key");
+        row.add(description[key]);
+      }
+
+      headerUpdated = true;
+    }
+  }
+}
+
+class OpenOrders extends Command with ApiCall, Description, Tabular {
   @override
   String get name => "openorders";
 
@@ -14,9 +83,11 @@ class OpenOrders extends Command with ApiCall, Tabular {
 
   OpenOrders() {
     initTabularOptions(argParser);
+    initDescriptionOption(argParser);
     argParser.addFlag(
       "trades",
       abbr: "t",
+      help: "Not yet implemented.",
       defaultsTo: false,
       callback: (it) => showTrades = it,
     );
@@ -30,6 +101,18 @@ class OpenOrders extends Command with ApiCall, Tabular {
       trades: showTrades,
     )))["open"];
     processResultMapOfMaps(result, keyColumn: "txid");
+  }
+
+  @override
+  List<List<String>> preProcessRows(List<String> header, List<List> unprocessed) {
+    updateDescription(header, unprocessed, descriptionMode);
+    return super.preProcessRows(header, unprocessed);
+  }
+
+  @override
+  TabularData postProcessRows(TabularData rows) {
+    final modified = modifyDateTimeColumns(rows);
+    return super.postProcessRows(modified);
   }
 
   @override
