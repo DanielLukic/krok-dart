@@ -10,6 +10,7 @@ import 'package:krok/common/log.dart';
 part 'auto_cache.dart';
 part 'command/asset_pairs.dart';
 part 'command/assets.dart';
+part 'command/balance.dart';
 part 'command/ohlc.dart';
 part 'command/spread.dart';
 part 'command/system_status.dart';
@@ -34,6 +35,7 @@ run(List<String> args) async {
       ..addKeyFileOption()
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
+      ..addCommand(BalanceCommand())
       ..addCommand(OhlcCommand())
       ..addCommand(SpreadCommand())
       ..addCommand(SystemStatus())

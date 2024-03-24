@@ -77,6 +77,25 @@ extension MapToTable on Map<String, dynamic> {
         keys.toList(),
         values.map((e) => e.toString()).toList(),
       ].toList();
+
+  List<List<String>> asVerticalTableData(List<String> columns) {
+    if (isEmpty) return [];
+    final check = entries.first.value;
+    if (check is List) {
+      if (columns.length != check.length + 1 /*key column*/) {
+        throw ArgumentError("columns must match key + value list length");
+      }
+      return [
+        columns,
+        ...entries.map((e) => [e.key, ...(e.value as List<dynamic>).map((e) => e.toString())]),
+      ].toList();
+    } else {
+      return [
+        columns,
+        ...entries.map((e) => [e.key, e.value.toString()]),
+      ].toList();
+    }
+  }
 }
 
 extension IntToKrakenDateTime on int {

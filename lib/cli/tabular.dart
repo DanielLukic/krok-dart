@@ -53,20 +53,6 @@ mixin Tabular {
     );
   }
 
-  processTabularData(Result result) {
-    if (result.length != 1) {
-      throw ArgumentError("single entry map required", "result");
-    }
-    var data = result.entries.first.value;
-    if (data is Map<String, dynamic>) {
-      return processResultMap(data);
-    } else if (data is List) {
-      return processResultList(data);
-    } else {
-      throw ArgumentError("unknown entry type: $result", "result");
-    }
-  }
-
   processResultList(List<dynamic> result) {
     if (result.isEmpty) {
       print("no data");
@@ -89,6 +75,19 @@ mixin Tabular {
   }
 
   processResultMap(Result result) {
+    switch (format) {
+      case OutputFormat.raw:
+        print(result);
+      case OutputFormat.json:
+        print(jsonEncode(result));
+      case OutputFormat.csv:
+        formatCsv(result.asTableData()).forEach(print);
+      case OutputFormat.table:
+        formatTable(result.asTableData(), headerDivider: false).forEach(print);
+    }
+  }
+
+  processVerticalResultMap(Result result, List<String> columns) {
     switch (format) {
       case OutputFormat.raw:
         print(result);
