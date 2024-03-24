@@ -38,6 +38,7 @@ run(List<String> args) async {
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
       ..addCommand(Balance())
+      ..addCommand(ClosedOrders())
       ..addCommand(Ohlc())
       ..addCommand(OpenOrders())
       ..addCommand(Spread())

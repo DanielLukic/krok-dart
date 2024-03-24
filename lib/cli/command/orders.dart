@@ -114,6 +114,34 @@ class OpenOrders extends Command with ApiCall, Description, Tabular {
     final modified = modifyDateTimeColumns(rows);
     return super.postProcessRows(modified);
   }
+}
+
+class ClosedOrders extends Command with ApiCall, Description, Tabular {
+  @override
+  String get name => "closedorders";
+
+  @override
+  String get description => "Retrieve closed orders. Alias: $aliases";
+
+  @override
+  List<String> get aliases => const ["co", "closed"];
+
+  ClosedOrders() {
+    initTabularOptions(argParser);
+    initDescriptionOption(argParser);
+  }
+
+  @override
+  autoClose(KrakenApi api) async {
+    final Result result = (await api.retrieve(KrakenRequest.closedOrders()))["closed"];
+    processResultMapOfMaps(result, keyColumn: "txid");
+  }
+
+  @override
+  List<List<String>> preProcessRows(List<String> header, List<List> unprocessed) {
+    updateDescription(header, unprocessed, descriptionMode);
+    return super.preProcessRows(header, unprocessed);
+  }
 
   @override
   TabularData postProcessRows(TabularData rows) {
