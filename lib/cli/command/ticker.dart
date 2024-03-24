@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class TickerCommand extends Command with _AutoCache, _Pairs, _Tabular {
+class TickerCommand extends Command with _AutoCache, _Pairs, _PublicCall, _Tabular {
   @override
   String get name => "ticker";
 
@@ -16,17 +16,12 @@ class TickerCommand extends Command with _AutoCache, _Pairs, _Tabular {
   }
 
   @override
-  Future<void> run() async {
-    final api = KrakenApi.fromFile(_keyFilePath);
-    try {
-      final Result result = await maybeCached(
-        cacheName: "ticker",
-        cacheIf: pairs.isNullOrEmpty,
-        retrieve: () => api.retrieve(KrakenRequest.ticker(pairs: pairs)),
-      );
-      processResultMapOfMaps(result);
-    } finally {
-      api.close();
-    }
+  autoClose(KrakenApi api) async {
+    final Result result = await maybeCached(
+      cacheName: "ticker",
+      cacheIf: pairs.isNullOrEmpty,
+      retrieve: () => api.retrieve(KrakenRequest.ticker(pairs: pairs)),
+    );
+    processResultMapOfMaps(result);
   }
 }

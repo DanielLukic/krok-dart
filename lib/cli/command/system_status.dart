@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class SystemStatus extends Command {
+class SystemStatus extends Command with _PublicCall {
   @override
   String get name => "status";
 
@@ -24,22 +24,17 @@ class SystemStatus extends Command {
   OutputFormat format = OutputFormat.table;
 
   @override
-  Future<void> run() async {
-    final api = KrakenApi.fromFile(_keyFilePath);
-    try {
-      var result = await api.retrieve(KrakenRequest.systemStatus());
-      switch (format) {
-        case OutputFormat.raw:
-          print(result);
-        case OutputFormat.json:
-          print(jsonEncode(result));
-        case OutputFormat.csv:
-          formatCsv(result.asTableData()).forEach(print);
-        case OutputFormat.table:
-          formatTable(result.asTableData()).forEach(print);
-      }
-    } finally {
-      api.close();
+  autoClose(KrakenApi api) async {
+    var result = await api.retrieve(KrakenRequest.systemStatus());
+    switch (format) {
+      case OutputFormat.raw:
+        print(result);
+      case OutputFormat.json:
+        print(jsonEncode(result));
+      case OutputFormat.csv:
+        formatCsv(result.asTableData()).forEach(print);
+      case OutputFormat.table:
+        formatTable(result.asTableData()).forEach(print);
     }
   }
 }

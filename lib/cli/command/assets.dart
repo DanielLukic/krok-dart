@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class Assets extends Command with _AutoCache, _Tabular {
+class Assets extends Command with _AutoCache, _PublicCall, _Tabular {
   @override
   String get name => "assets";
 
@@ -24,17 +24,12 @@ class Assets extends Command with _AutoCache, _Tabular {
   List<String>? assets;
 
   @override
-  Future<void> run() async {
-    final api = KrakenApi.fromFile(_keyFilePath);
-    try {
-      final Result result = await maybeCached(
-        cacheName: "assets",
-        cacheIf: assets.isNullOrEmpty,
-        retrieve: () => api.retrieve(KrakenRequest.assets(assets: assets)),
-      );
-      processResultMapOfMaps(result);
-    } finally {
-      api.close();
-    }
+  autoClose(KrakenApi api) async {
+    final Result result = await maybeCached(
+      cacheName: "assets",
+      cacheIf: assets.isNullOrEmpty,
+      retrieve: () => api.retrieve(KrakenRequest.assets(assets: assets)),
+    );
+    processResultMapOfMaps(result);
   }
 }

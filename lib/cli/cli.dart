@@ -16,6 +16,7 @@ part 'command/system_status.dart';
 part 'command/ticker.dart';
 part 'options.dart';
 part 'pair.dart';
+part 'public_call.dart';
 part 'since.dart';
 part 'tabular.dart';
 
