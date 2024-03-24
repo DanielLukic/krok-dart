@@ -1,6 +1,6 @@
 part of 'cli.dart';
 
-mixin _AutoCache {
+mixin AutoCache {
   Future<Result> maybeCached({
     required String cacheName,
     required bool cacheIf,

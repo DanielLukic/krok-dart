@@ -1,6 +1,6 @@
 part of 'cli.dart';
 
-mixin _Pair {
+mixin Pair {
   late String pair;
 
   initPairOption(ArgParser argParser) {
@@ -15,7 +15,7 @@ mixin _Pair {
   }
 }
 
-mixin _Pairs {
+mixin Pairs {
   List<String>? pairs;
 
   initPairsOption(ArgParser argParser) {

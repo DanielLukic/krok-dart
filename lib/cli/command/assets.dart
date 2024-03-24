@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class Assets extends Command with _AutoCache, _PublicCall, _Tabular {
+class Assets extends Command with AutoCache, PublicCall, Tabular {
   @override
   String get name => "assets";
 

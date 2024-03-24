@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class TickerCommand extends Command with _AutoCache, _Pairs, _PublicCall, _Tabular {
+class TickerCommand extends Command with AutoCache, Pairs, PublicCall, Tabular {
   @override
   String get name => "ticker";
 

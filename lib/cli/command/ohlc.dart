@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class OhlcCommand extends Command with _AutoCache, _Pair, _PublicCall, _Since, _Tabular {
+class OhlcCommand extends Command with AutoCache, Pair, PublicCall, Since, Tabular {
   @override
   String get name => "ohlc";
 

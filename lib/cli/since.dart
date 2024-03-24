@@ -1,6 +1,6 @@
 part of 'cli.dart';
 
-mixin _Since {
+mixin Since {
   DateTime? since;
 
   initSinceOption(ArgParser argParser) {

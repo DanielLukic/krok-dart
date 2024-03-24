@@ -12,7 +12,7 @@ extension on String? {
       );
 }
 
-mixin _Tabular {
+mixin Tabular {
   OutputFormat format = OutputFormat.table;
   List<String>? columns;
   bool allColumns = false;

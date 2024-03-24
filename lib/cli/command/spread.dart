@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class SpreadCommand extends Command with _AutoCache, _Pair, _PublicCall, _Since, _Tabular {
+class SpreadCommand extends Command with AutoCache, Pair, PublicCall, Since, Tabular {
   @override
   String get name => "spread";
 
