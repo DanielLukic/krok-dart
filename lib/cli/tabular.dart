@@ -18,8 +18,7 @@ mixin _Tabular {
   bool allColumns = false;
   bool full = false;
 
-  bool get tabular =>
-      format == OutputFormat.table || format == OutputFormat.csv;
+  bool get tabular => format == OutputFormat.table || format == OutputFormat.csv;
 
   initTabularOptions(ArgParser argParser) {
     argParser.addOption(
@@ -69,6 +68,10 @@ mixin _Tabular {
   }
 
   processResultList(List<dynamic> result) {
+    if (result.isEmpty) {
+      print("no data");
+      return;
+    }
     final raw = result.map((e) => e as List<dynamic>);
     final data = raw.map((e) => e.map((e) => e.toString()).toList()).toList();
     switch (format) {

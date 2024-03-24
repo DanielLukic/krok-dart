@@ -56,9 +56,14 @@ class KrakenRequest {
         },
         scope = Scope.public;
 
-  KrakenRequest.spread(Pair? pair)
-      : path = "Spread",
-        params = {if (pair != null) "pair": pair},
+  KrakenRequest.spread({
+    Pair? pair,
+    DateTime? since,
+  })  : path = "Spread",
+        params = {
+          if (pair != null) "pair": pair,
+          if (since != null) "since": since.millisecondsSinceEpoch ~/ 1000,
+        },
         scope = Scope.public;
 
   KrakenRequest.balance()

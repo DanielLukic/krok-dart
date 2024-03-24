@@ -109,7 +109,7 @@ extension StringToRelativeDateTime on String? {
       'm' => Duration(minutes: value),
       'h' => Duration(hours: value),
       'd' => Duration(days: value),
-      _ => null;
+      _ => null,
     };
     if (duration == null) return null;
     return DateTime.now().subtract(duration);

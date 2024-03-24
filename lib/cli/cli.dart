@@ -11,6 +11,7 @@ part 'auto_cache.dart';
 part 'command/asset_pairs.dart';
 part 'command/assets.dart';
 part 'command/ohlc.dart';
+part 'command/spread.dart';
 part 'command/system_status.dart';
 part 'command/ticker.dart';
 part 'options.dart';
@@ -32,6 +33,7 @@ run(List<String> args) async {
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
       ..addCommand(OhlcCommand())
+      ..addCommand(SpreadCommand())
       ..addCommand(SystemStatus())
       ..addCommand(TickerCommand());
 
