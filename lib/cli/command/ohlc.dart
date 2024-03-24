@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class OhlcCommand extends Command with _AutoCache, _Tabular {
+class OhlcCommand extends Command with _AutoCache, _Since, _Tabular {
   @override
   String get name => "ohlc";
 
@@ -12,10 +12,11 @@ class OhlcCommand extends Command with _AutoCache, _Tabular {
 
   OhlcCommand() {
     initTabularOptions(argParser);
+    initSinceOption(argParser);
     argParser.addOption(
       "pair",
       abbr: "p",
-      help: "The pair to get ohlc data for.",
+      help: "The pair to get data for.",
       mandatory: true,
       valueHelp: "XBTUSD",
       callback: (it) => pair = it!,
@@ -29,32 +30,10 @@ class OhlcCommand extends Command with _AutoCache, _Tabular {
       defaultsTo: interval.name,
       callback: (it) => interval = it.asOhlcInterval(defaultValue: interval),
     );
-    argParser.addOption(
-      "since",
-      abbr: "s",
-      help: "Either: Timestamp in UNIX format (UTC).\n"
-          "Or: RFC3339 datetime.\n"
-          "Or: Relative time in seconds/minutes/hours/days, using s/m/h/d suffix.\n"
-          "A maximum of 720 values is returned.",
-      valueHelp: "timestamp|datetime|relative",
-      callback: (it) => _parseSince(it),
-    );
-  }
-
-  _parseSince(String? it) {
-    if (it == null) return null;
-    if (RegExp(r"^\d+$").hasMatch(it)) {
-      since = DateTime.fromMillisecondsSinceEpoch(int.parse(it), isUtc: true);
-    } else if (RegExp(r"^\d+[smhd]$").hasMatch(it)) {
-      since = it.toRelativeDateTime();
-    } else {
-      since = DateTime.parse(it);
-    }
   }
 
   late String pair;
   OhlcInterval interval = OhlcInterval.oneMinute;
-  DateTime? since;
 
   @override
   Future<void> run() async {

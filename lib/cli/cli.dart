@@ -14,6 +14,7 @@ part 'command/ohlc.dart';
 part 'command/system_status.dart';
 part 'command/ticker.dart';
 part 'options.dart';
+part 'since.dart';
 part 'tabular.dart';
 
 run(List<String> args) async {
