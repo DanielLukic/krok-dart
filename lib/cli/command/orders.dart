@@ -116,7 +116,7 @@ class OpenOrders extends Command with ApiCall, Description, Tabular, Trades {
   }
 }
 
-class ClosedOrders extends Command with ApiCall, Description, Tabular, Trades {
+class ClosedOrders extends Command with ApiCall, Description, KrakenTimeOption, Tabular, Trades {
   @override
   String get name => "closedorders";
 
@@ -129,12 +129,73 @@ class ClosedOrders extends Command with ApiCall, Description, Tabular, Trades {
   ClosedOrders() {
     initTabularOptions(argParser);
     initDescriptionOption(argParser);
+    initKrakenTimeOption(
+      argParser,
+      name: "start",
+      abbr: "s",
+      assign: (it) => start = it != null ? KrakenTime.fromString(it) : null,
+    );
+    initKrakenTimeOption(
+      argParser,
+      name: "end",
+      abbr: "e",
+      assign: (it) => end = it != null ? KrakenTime.fromString(it) : null,
+    );
+    argParser.addOption(
+      "startTxid",
+      aliases: ["st", "stxid", "stid", "sid"],
+      help: "Define start via order txid. Use only one of start or startTxid.\n"
+          "Behavior is undefined if both options are used at the same time.\n"
+          "Note that this option is not tested properly for now.\n"
+          "Aliases: [st, stxid, stid, sid]",
+      valueHelp: "order-tx-id",
+      callback: (it) => startTxid = it,
+    );
+    argParser.addOption(
+      "endTxid",
+      aliases: ["et", "etxid", "etid", "eid"],
+      help: "Define end via order txid. Use only one of end or endTxid.\n"
+          "Behavior is undefined if both options are used at the same time.\n"
+          "Note that this option is not tested properly for now.\n"
+          "Aliases: [st, stxid, stid, sid]",
+      valueHelp: "order-tx-id",
+      callback: (it) => startTxid = it,
+    );
+    argParser.addOption(
+      "offset",
+      abbr: "o",
+      help: "Pagination offset. Not tested, yet.",
+      valueHelp: "count",
+      callback: (it) => offset = it != null ? int.parse(it) : offset,
+    );
+    argParser.addFlag(
+      "consolidate",
+      aliases: ["ct"],
+      help: "Consolidate taker fees by order. Defaults to false. Alias: ct",
+      defaultsTo: false,
+      callback: (it) => consolidateTaker = it,
+    );
   }
+
+  KrakenTime? start;
+  String? startTxid;
+  KrakenTime? end;
+  String? endTxid;
+  int? offset;
+  CloseTime? closeTime;
+  bool? consolidateTaker;
 
   @override
   autoClose(KrakenApi api) async {
     final Result result = (await api.retrieve(KrakenRequest.closedOrders(
       trades: showTrades,
+      start: start,
+      startTxid: startTxid,
+      end: end,
+      endTxid: endTxid,
+      offset: offset,
+      closeTime: closeTime,
+      consolidateTaker: consolidateTaker,
     )))["closed"];
     processResultMapOfMaps(result, keyColumn: "txid");
   }
