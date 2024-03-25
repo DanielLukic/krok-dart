@@ -27,7 +27,7 @@ class Balance extends Command with ApiCall, Tabular {
   autoClose(KrakenApi api) async {
     final Result result = await api.retrieve(KrakenRequest.balance());
     final filtered = result.where((p0, p1) => small || double.parse(p1) >= 0.000001);
-    final data = filtered.asVerticalTableData(["pair", "volume"]);
-    processResultList(data);
+    final data = filtered.asVerticalTableData();
+    processResultList(data, ["pair", "volume"]);
   }
 }

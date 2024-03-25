@@ -17,7 +17,7 @@ class TradeBalance extends Command with ApiCall, Tabular {
   @override
   autoClose(KrakenApi api) async {
     final Result result = await api.retrieve(KrakenRequest.tradeBalance());
-    final data = result.asVerticalTableData(["kind", "volume"]);
-    processResultList(data);
+    final data = result.asVerticalTableData();
+    processResultList(data, ["kind", "volume"]);
   }
 }
