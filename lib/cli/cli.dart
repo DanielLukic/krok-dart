@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
@@ -37,6 +38,7 @@ run(List<String> args) async {
       ..addLogOption()
       ..addCachedOption()
       ..addKeyFileOption()
+      ..addCommand(AddMarketOrder())
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
       ..addCommand(Balance())
@@ -53,6 +55,10 @@ run(List<String> args) async {
     await runner.run(args);
   } on UsageException catch (it) {
     print(it);
+    exit(2);
+  } on KrakenException catch (it) {
+    print(it.message);
+    exit(1);
   }
 }
 
