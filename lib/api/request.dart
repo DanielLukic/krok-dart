@@ -122,9 +122,9 @@ class KrakenRequest {
         scope = Scope.private;
 
   KrakenRequest.tradeVolume({
-    List<String> pairs = const [],
+    List<String>? pairs,
   })  : path = "TradeVolume",
-        params = {if (pairs.isNotEmpty) "pair": pairs.join(",")},
+        params = {if (pairs?.isNotEmpty == true) "pair": pairs?.join(",")},
         scope = Scope.private;
 
   KrakenRequest.addOrder({

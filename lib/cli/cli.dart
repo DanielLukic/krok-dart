@@ -22,6 +22,7 @@ part 'command/spread.dart';
 part 'command/system_status.dart';
 part 'command/ticker.dart';
 part 'command/tradebalance.dart';
+part 'command/tradevolume.dart';
 part 'options.dart';
 
 run(List<String> args) async {
@@ -46,7 +47,8 @@ run(List<String> args) async {
       ..addCommand(Spread())
       ..addCommand(SystemStatus())
       ..addCommand(Ticker())
-      ..addCommand(TradeBalance());
+      ..addCommand(TradeBalance())
+      ..addCommand(TradeVolume());
 
     await runner.run(args);
   } on UsageException catch (it) {
