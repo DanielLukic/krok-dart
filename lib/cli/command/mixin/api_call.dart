@@ -1,4 +1,4 @@
-part of 'cli.dart';
+part of '../../cli.dart';
 
 abstract mixin class ApiCall {
   autoClose(KrakenApi api);

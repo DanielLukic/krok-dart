@@ -1,4 +1,4 @@
-part of 'cli.dart';
+part of '../../cli.dart';
 
 mixin Pair {
   late String pair;
