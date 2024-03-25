@@ -28,9 +28,8 @@ class Spread extends Command with AutoCache, Pair, ApiCall, Since, Tabular {
       processResultList(raw.reverse());
     } else {
       final data = raw.castEach<List<dynamic>>();
-      final timestamped = data.map_(firstColumnToDateTime);
       final header = ["time", "bid", "ask"];
-      processResultList(timestamped.reverse(), header, columns);
+      processResultList(data.reverse(), header, columns);
     }
   }
 }

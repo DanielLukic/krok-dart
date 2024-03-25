@@ -78,6 +78,14 @@ mixin Tabular {
       print("no data");
       return;
     }
+
+    if (columns != null && columns.isEmpty) {
+      throw ArgumentError("columns may be null, but most not be empty otherwise");
+    }
+    if (columns != null && header.isNullOrEmpty) {
+      throw ArgumentError("when columns are specified, header must be non-null and non-empty");
+    }
+
     final raw = result.map((e) => e as List<dynamic>);
     var data = raw.map((e) => e.map((e) => e.toString()).toList()).toList();
     if (header != null) data.insert(0, header);
@@ -88,6 +96,9 @@ mixin Tabular {
       }
       data = [for (final row in data) pickColumns(row, picked)];
     }
+
+    if (header != null && !timestamps) modifyDateTimeColumns(data);
+
     switch (format) {
       case OutputFormat.raw:
         result.forEach(print);
@@ -157,9 +168,14 @@ mixin Tabular {
   }
 
   List<List<String>> modifyDateTimeColumns(List<List<String>> rows) {
-    final columns = rows.first.indexWhere_((it) => it.endsWith("tm"));
-    final header = rows.removeAt(0);
-    rows = [header, ...rows.map((row) => _modifyDateTimeInPlace(columns, row))];
+    if (rows.length < 2) {
+      throw ArgumentError("header plus at least one row required");
+    }
+    final header = rows[0];
+    final columns = header.indexWhere_((it) => it == "time" || it.endsWith("tm"));
+    for (final row in rows.skip(1)) {
+      _modifyDateTimeInPlace(columns, row);
+    }
     return rows;
   }
 
