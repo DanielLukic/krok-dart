@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class Ohlc extends Command with Pair, ApiCall, Since, Tabular {
+class Ohlc extends Command with Pair, ApiCall, KrakenTimeOption, Tabular {
   @override
   String get name => "ohlc";
 
@@ -12,7 +12,12 @@ class Ohlc extends Command with Pair, ApiCall, Since, Tabular {
 
   Ohlc() {
     initTabularOptions(argParser);
-    initSinceOption(argParser);
+    initKrakenTimeOption(
+      argParser,
+      name: "since",
+      abbr: "s",
+      assign: (it) => since = it != null ? KrakenTime.fromString(it) : since,
+    );
     initPairOption(argParser);
     argParser.addOption(
       "interval",
@@ -25,6 +30,7 @@ class Ohlc extends Command with Pair, ApiCall, Since, Tabular {
     );
   }
 
+  KrakenTime? since;
   OhlcInterval interval = OhlcInterval.oneMinute;
 
   @override
