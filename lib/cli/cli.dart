@@ -14,6 +14,7 @@ part 'command/assets.dart';
 part 'command/balance.dart';
 part 'command/mixin/api_call.dart';
 part 'command/mixin/auto_cache.dart';
+part 'command/mixin/orders.dart';
 part 'command/mixin/pair.dart';
 part 'command/mixin/since.dart';
 part 'command/mixin/tabular.dart';

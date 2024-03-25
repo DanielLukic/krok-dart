@@ -6,18 +6,19 @@ extension on LogLevel {
   tag() => name.substring(0, 1).toUpperCase();
 }
 
-log(Object? message, [LogLevel? level]) {
+log(Object? message, [LogLevel? level, StackTrace? trace]) {
   level ??= LogLevel.info;
   if (level.index < logLevel.index) return;
   var (name, where) = StackTrace.current.caller;
   print("[${level.tag()}] $message [$name] $where");
+  if (trace != null) print(trace.toString());
 }
 
 logInfo(Object? message) => log(message, LogLevel.info);
 
 logWarn(Object? message) => log(message, LogLevel.warn);
 
-logError(Object? message) => log(message, LogLevel.error);
+logError(Object? message, [StackTrace? trace]) => log(message, LogLevel.error, trace);
 
 logDebug(Object? message) => log(message, LogLevel.debug);
 
