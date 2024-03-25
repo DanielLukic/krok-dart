@@ -5,7 +5,7 @@ class Assets extends Command with AutoCache, ApiCall, Tabular {
   String get name => "assets";
 
   @override
-  String get description => "Retrieve asset information. Alias: a";
+  String get description => "Retrieve asset information. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["a"];

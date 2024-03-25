@@ -5,7 +5,7 @@ class TradeBalance extends Command with ApiCall, Tabular {
   String get name => "tradebalance";
 
   @override
-  String get description => "Retrieve trade balance data. Alias: tb or tbal";
+  String get description => "Retrieve trade balance data. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["tb", "tbal"];

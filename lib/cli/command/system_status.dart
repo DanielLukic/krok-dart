@@ -5,7 +5,7 @@ class SystemStatus extends Command with ApiCall {
   String get name => "status";
 
   @override
-  String get description => "Retrieve Kraken system status.";
+  String get description => "Retrieve Kraken system status. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["s"];

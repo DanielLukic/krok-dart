@@ -5,7 +5,7 @@ class Ticker extends Command with AutoCache, Pairs, ApiCall, Tabular {
   String get name => "ticker";
 
   @override
-  String get description => "Retrieve ticker data. Alias: t";
+  String get description => "Retrieve ticker data. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["t"];

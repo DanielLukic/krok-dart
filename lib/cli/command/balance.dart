@@ -5,7 +5,7 @@ class Balance extends Command with ApiCall, Tabular {
   String get name => "balance";
 
   @override
-  String get description => "Retrieve account balance data. Alias: b";
+  String get description => "Retrieve account balance data. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["b"];

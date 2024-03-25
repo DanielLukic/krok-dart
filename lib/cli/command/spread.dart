@@ -5,7 +5,7 @@ class Spread extends Command with AutoCache, Pair, ApiCall, Since, Tabular {
   String get name => "spread";
 
   @override
-  String get description => "Retrieve spread data. Alias: sp";
+  String get description => "Retrieve spread data. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["sp"];

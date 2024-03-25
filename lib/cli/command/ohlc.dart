@@ -5,7 +5,7 @@ class Ohlc extends Command with Pair, ApiCall, Since, Tabular {
   String get name => "ohlc";
 
   @override
-  String get description => "Retrieve ohlc data. Alias: o";
+  String get description => "Retrieve ohlc data. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["o"];

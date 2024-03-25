@@ -5,7 +5,7 @@ class AssetPairs extends Command with AutoCache, Pairs, ApiCall, Tabular {
   String get name => "assetpairs";
 
   @override
-  String get description => "Retrieve asset pairs. Alias: ap";
+  String get description => "Retrieve asset pairs. Alias: $aliases";
 
   @override
   List<String> get aliases => const ["ap"];
