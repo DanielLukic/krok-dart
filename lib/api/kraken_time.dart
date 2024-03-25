@@ -15,8 +15,13 @@ class KrakenTime {
   KrakenTime.now() //
       : tm = DateTime.now().millisecondsSinceEpoch / 1000.0;
 
-  KrakenTime.fromString(String it) //
-      : tm = it.toKrakenTm();
+  /// Turn some date/time/duration string into a Kraken API "tm" value. This supports unix
+  /// timestamp, RFC3339/ISO8601 datetime, and relative times like "1h" or "15m".
+  ///
+  /// Setting the [since] flag to false changes relative times to be added to now. By default they
+  /// are subtracted from now (aka "since").
+  KrakenTime.fromString(String? it, {bool since = true}) //
+      : tm = it.toKrakenTm(since);
 
   KrakenTime.fromTimestamp(int unixTimestamp) //
       : tm = unixTimestamp / 1000.0;
@@ -45,9 +50,10 @@ class KrakenTime {
   }
 }
 
-extension on String {
+extension on String? {
   Duration? toDuration() {
     final it = this;
+    if (it == null) return null;
     final modifier = it.substring(it.length - 1);
     final value = int.parse(it.substring(0, it.length - 1));
     final duration = switch (modifier) {
@@ -60,19 +66,25 @@ extension on String {
     return duration;
   }
 
-  DateTime? toDateTime() {
+  DateTime? toDateTime(since) {
     final duration = toDuration();
     if (duration == null) return null;
-    return DateTime.now().subtract(duration);
+    var now = DateTime.now();
+    if (since) {
+      return now.subtract(duration);
+    } else {
+      return now.add(duration);
+    }
   }
 
-  double toKrakenTm() {
+  double? toKrakenTm(bool since) {
     final it = this;
+    if (it == null) return null;
     final DateTime result;
     if (RegExp(r"^\d+$").hasMatch(it)) {
       result = DateTime.fromMillisecondsSinceEpoch(int.parse(it), isUtc: true);
     } else if (RegExp(r"^\d+[smhd]$").hasMatch(it)) {
-      result = it.toDateTime()!;
+      result = it.toDateTime(since)!;
     } else {
       result = DateTime.parse(it);
     }
