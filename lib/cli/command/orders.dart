@@ -202,7 +202,7 @@ class AddMarketOrder extends OrderBase {
       pair: pair,
       volume: volume,
     ));
-    logVerbose(result);
+    logVerbose(() => result["descr"]["order"]);
 
     final txid = (result["txid"] as List).first;
     await checkOrder(api, txid);
