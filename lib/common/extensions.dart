@@ -6,7 +6,8 @@ extension ResultPickColumn on MapEntry<String, dynamic> {
   /// Pick columns from the map entry value, based on the given [columns] as
   /// keys. The "dynamic" value is required to be a map, or at least respond to
   /// the [] operator with a String key.
-  List pick(List<String> columns) => List.generate(columns.length, (index) => value[columns[index]]);
+  List pick(List<String> columns) =>
+      List.generate(columns.length, (index) => value[columns[index]]);
 }
 
 extension ListExtractColumn<T> on List<List<T>> {
@@ -39,7 +40,8 @@ extension MapPlusMap<K, V> on Map<K, V> {
 }
 
 extension MapWhere<K, V> on Map<K, V> {
-  Map<K, V> where(bool Function(K, V) test) => entries.where((element) => test(element.key, element.value)).toMap();
+  Map<K, V> where(bool Function(K, V) test) =>
+      entries.where((element) => test(element.key, element.value)).toMap();
 }
 
 extension MapEntries on Map<String, dynamic> {
@@ -101,7 +103,8 @@ extension MapToTable on Map<String, dynamic> {
 }
 
 extension DoubleToKrakenDateTime on double {
-  DateTime toKrakenDateTime() => DateTime.fromMillisecondsSinceEpoch((this * 1000).toInt(), isUtc: true);
+  DateTime toKrakenDateTime() =>
+      DateTime.fromMillisecondsSinceEpoch((this * 1000).toInt(), isUtc: true);
 }
 
 extension IntToKrakenDateTime on int {
@@ -125,5 +128,10 @@ extension MapList<T, R> on List<T> {
 extension ListOfT<T> on List<T> {
   List<T> reverse() => reversed.toList();
 
-  List<int> indexWhere_(bool Function(T) select) => indexed.where((it) => select(it.$2)).map((e) => e.$1).toList();
+  List<int> indexWhere_(bool Function(T) select) =>
+      indexed.where((it) => select(it.$2)).map((e) => e.$1).toList();
 }
+
+List<T> pickColumns<T>(List<T> row, List<int> columns) => [for (final c in columns) row[c]];
+
+bool isNegative(int idx) => idx < 0;

@@ -4,6 +4,10 @@ typedef TabularData = List<List<String>>;
 
 enum OutputFormat { csv, json, raw, table }
 
+extension on OutputFormat {
+  bool get isTabular => this == OutputFormat.csv || this == OutputFormat.table;
+}
+
 extension on String? {
   OutputFormat asOutputFormat({
     OutputFormat defaultValue = OutputFormat.table,
@@ -69,14 +73,21 @@ mixin Tabular {
     );
   }
 
-  processResultList(List<dynamic> result, [List<String>? header]) {
+  processResultList(List<dynamic> result, [List<String>? header, List<String>? columns]) {
     if (result.isEmpty) {
       print("no data");
       return;
     }
     final raw = result.map((e) => e as List<dynamic>);
-    final data = raw.map((e) => e.map((e) => e.toString()).toList()).toList();
+    var data = raw.map((e) => e.map((e) => e.toString()).toList()).toList();
     if (header != null) data.insert(0, header);
+    if (columns != null && header != null && format.isTabular) {
+      final picked = [for (final c in columns) header.indexOf(c)];
+      if (picked.any(isNegative)) {
+        throw ArgumentError("column(s) $columns not found in: $header");
+      }
+      data = [for (final row in data) pickColumns(row, picked)];
+    }
     switch (format) {
       case OutputFormat.raw:
         result.forEach(print);
