@@ -166,8 +166,18 @@ class QueryOrders extends Command with ApiCall, Description, Tabular, Trades {
   }
 }
 
-class AddMarketOrder extends Command
-    with ApiCall, CheckOrder, OrderDirectionOption, OrderVolume, Pair, Tabular {
+// TODO is this the way? seems odd...
+abstract class OrderBase extends Command
+    with
+        ApiCall,
+        CheckOrder,
+        OrderDirectionOption,
+        OrderVolume,
+        KrakenTimeOption,
+        Pair,
+        Tabular {}
+
+class AddMarketOrder extends OrderBase {
   @override
   String get name => "marketorder";
 
