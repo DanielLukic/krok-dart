@@ -41,7 +41,8 @@ class Ohlc extends Command with Pair, ApiCall, Since, Tabular {
     } else {
       final data = raw.castEach<List<dynamic>>();
       final timestamped = data.map_(firstColumnToDateTime);
-      processResultList(timestamped.reverse());
+      final header = ["tm", "open", "high", "low", "close", "vwap", "volume", "count"];
+      processResultList(timestamped.reverse(), header);
     }
   }
 }

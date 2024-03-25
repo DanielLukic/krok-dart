@@ -69,13 +69,14 @@ mixin Tabular {
     );
   }
 
-  processResultList(List<dynamic> result) {
+  processResultList(List<dynamic> result, [List<String>? header]) {
     if (result.isEmpty) {
       print("no data");
       return;
     }
     final raw = result.map((e) => e as List<dynamic>);
     final data = raw.map((e) => e.map((e) => e.toString()).toList()).toList();
+    if (header != null) data.insert(0, header);
     switch (format) {
       case OutputFormat.raw:
         result.forEach(print);
@@ -86,7 +87,7 @@ mixin Tabular {
       case OutputFormat.csv:
         formatCsv(data).forEach(print);
       case OutputFormat.table:
-        formatTable(data, headerDivider: false).forEach(print);
+        formatTable(data, headerDivider: header != null).forEach(print);
     }
   }
 
