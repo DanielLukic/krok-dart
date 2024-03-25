@@ -19,6 +19,7 @@ extension on String? {
 mixin Tabular {
   OutputFormat format = OutputFormat.table;
   List<String>? columns;
+  bool timestamps = false;
   bool allColumns = false;
   bool full = false;
 
@@ -43,6 +44,14 @@ mixin Tabular {
           "If nothing specified, the raw output will be shown.\n"
           "Please see the Kraken API documentation for details about the columns.",
       callback: (it) => columns = it.isNullOrEmpty ? null : it,
+    );
+    argParser.addFlag(
+      "timestamps",
+      help: "Keep Kraken API timestamps instead of converting to datetime.",
+      defaultsTo: false,
+      negatable: false,
+      aliases: ["ts"],
+      callback: (it) => timestamps = it,
     );
     argParser.addFlag(
       "all",
@@ -201,7 +210,9 @@ mixin Tabular {
   /// Calls [postProcessRow] for each row, converting all values into strings. Override to customize
   /// output.
   TabularData postProcessRows(TabularData rows) {
-    rows = modifyDateTimeColumns(rows);
+    if (!timestamps) {
+      rows = modifyDateTimeColumns(rows);
+    }
     final header = rows.removeAt(0);
     rows = [header, ...rows.map((row) => postProcessRow(row, header))];
     return rows;
