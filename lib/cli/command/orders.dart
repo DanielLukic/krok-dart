@@ -71,7 +71,21 @@ abstract mixin class Description {
   }
 }
 
-class OpenOrders extends Command with ApiCall, Description, Tabular {
+mixin Trades {
+  bool showTrades = false;
+
+  initTradesOption(ArgParser argParser) {
+    argParser.addFlag(
+      "trades",
+      abbr: "t",
+      help: "Include trades in output.",
+      defaultsTo: false,
+      callback: (it) => showTrades = it,
+    );
+  }
+}
+
+class OpenOrders extends Command with ApiCall, Description, Tabular, Trades {
   @override
   String get name => "openorders";
 
@@ -84,16 +98,8 @@ class OpenOrders extends Command with ApiCall, Description, Tabular {
   OpenOrders() {
     initTabularOptions(argParser);
     initDescriptionOption(argParser);
-    argParser.addFlag(
-      "trades",
-      abbr: "t",
-      help: "Not yet implemented.",
-      defaultsTo: false,
-      callback: (it) => showTrades = it,
-    );
+    initTradesOption(argParser);
   }
-
-  bool showTrades = false;
 
   @override
   autoClose(KrakenApi api) async {
@@ -110,7 +116,7 @@ class OpenOrders extends Command with ApiCall, Description, Tabular {
   }
 }
 
-class ClosedOrders extends Command with ApiCall, Description, Tabular {
+class ClosedOrders extends Command with ApiCall, Description, Tabular, Trades {
   @override
   String get name => "closedorders";
 
@@ -127,7 +133,9 @@ class ClosedOrders extends Command with ApiCall, Description, Tabular {
 
   @override
   autoClose(KrakenApi api) async {
-    final Result result = (await api.retrieve(KrakenRequest.closedOrders()))["closed"];
+    final Result result = (await api.retrieve(KrakenRequest.closedOrders(
+      trades: showTrades,
+    )))["closed"];
     processResultMapOfMaps(result, keyColumn: "txid");
   }
 
