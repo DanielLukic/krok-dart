@@ -142,3 +142,4 @@ Maybe I'll extend support for reading or passing secret/key at some point.
 - [ ] TODO apply column selection after column expansion
 
 - [ ] TODO batch order/cancel
+- [ ] TODO add userref support
