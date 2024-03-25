@@ -10,6 +10,14 @@ log(Object? message, [LogLevel? level, StackTrace? trace]) {
   level ??= LogLevel.info;
   if (level.index < logLevel.index) return;
   var (name, where) = StackTrace.current.caller;
+  if (message is Function) {
+    try {
+      message = message();
+    } catch (it, trace) {
+      logError(it, trace);
+      return;
+    }
+  }
   print("[${level.tag()}] $message [$name] $where");
   if (trace != null) print(trace.toString());
 }
