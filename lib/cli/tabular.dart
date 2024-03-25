@@ -201,6 +201,7 @@ mixin Tabular {
   /// Calls [postProcessRow] for each row, converting all values into strings. Override to customize
   /// output.
   TabularData postProcessRows(TabularData rows) {
+    rows = modifyDateTimeColumns(rows);
     final header = rows.removeAt(0);
     rows = [header, ...rows.map((row) => postProcessRow(row, header))];
     return rows;

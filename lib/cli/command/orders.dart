@@ -108,12 +108,6 @@ class OpenOrders extends Command with ApiCall, Description, Tabular {
     updateDescription(header, unprocessed, descriptionMode);
     return super.preProcessRows(header, unprocessed);
   }
-
-  @override
-  TabularData postProcessRows(TabularData rows) {
-    final modified = modifyDateTimeColumns(rows);
-    return super.postProcessRows(modified);
-  }
 }
 
 class ClosedOrders extends Command with ApiCall, Description, Tabular {
@@ -141,11 +135,5 @@ class ClosedOrders extends Command with ApiCall, Description, Tabular {
   List<List<String>> preProcessRows(List<String> header, List<List> unprocessed) {
     updateDescription(header, unprocessed, descriptionMode);
     return super.preProcessRows(header, unprocessed);
-  }
-
-  @override
-  TabularData postProcessRows(TabularData rows) {
-    final modified = modifyDateTimeColumns(rows);
-    return super.postProcessRows(modified);
   }
 }
