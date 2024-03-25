@@ -47,22 +47,22 @@ class KrakenRequest {
   KrakenRequest.ohlc({
     required Pair pair,
     OhlcInterval? interval,
-    DateTime? since,
+    KrakenTime? since,
   })  : path = "OHLC",
         params = {
           "pair": pair,
           if (interval != null) "interval": interval.minutes,
-          if (since != null) "since": since.millisecondsSinceEpoch ~/ 1000,
+          if (since != null) "since": since.tm,
         },
         scope = Scope.public;
 
   KrakenRequest.spread({
     Pair? pair,
-    DateTime? since,
+    KrakenTime? since,
   })  : path = "Spread",
         params = {
           if (pair != null) "pair": pair,
-          if (since != null) "since": since.millisecondsSinceEpoch ~/ 1000,
+          if (since != null) "since": since.tm,
         },
         scope = Scope.public;
 

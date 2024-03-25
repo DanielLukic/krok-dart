@@ -1,5 +1,7 @@
 import 'dart:math';
 
+// TODO revisit - pretty sure there are better - more dart-ish - ways than most of these
+
 extension ResultPickColumn on MapEntry<String, dynamic> {
   /// Pick columns from the map entry value, based on the given [columns] as
   /// keys. The "dynamic" value is required to be a map, or at least respond to
@@ -118,25 +120,6 @@ extension ModifyList on List<dynamic> {
 extension MapList<T, R> on List<T> {
   /// In contrast to [map], this will return a [List] instead.
   List<R> map_(R Function(T) mapper) => map(mapper).toList();
-}
-
-extension StringToRelativeDateTime on String? {
-  DateTime? toRelativeDateTime() {
-    final it = this;
-    if (it == null) return null;
-
-    final modifier = it.substring(it.length - 1);
-    final value = int.parse(it.substring(0, it.length - 1));
-    final duration = switch (modifier) {
-      's' => Duration(seconds: value),
-      'm' => Duration(minutes: value),
-      'h' => Duration(hours: value),
-      'd' => Duration(days: value),
-      _ => null,
-    };
-    if (duration == null) return null;
-    return DateTime.now().subtract(duration);
-  }
 }
 
 extension ListOfT<T> on List<T> {

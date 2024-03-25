@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
 import 'package:krok/common/extensions.dart';
 import 'package:krok/common/log.dart';
+import 'package:krok/api/kraken_time.dart';
 
 part 'package:krok/api/config.dart';
 part 'package:krok/api/exception.dart';
