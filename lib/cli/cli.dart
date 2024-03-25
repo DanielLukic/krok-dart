@@ -42,6 +42,7 @@ run(List<String> args) async {
       ..addCommand(ClosedOrders())
       ..addCommand(Ohlc())
       ..addCommand(OpenOrders())
+      ..addCommand(QueryOrders())
       ..addCommand(Spread())
       ..addCommand(SystemStatus())
       ..addCommand(Ticker())
