@@ -51,26 +51,30 @@ enum OrderFlag {
   viqc,
 }
 
-sealed class OrderTime {}
+sealed class OrderTime {
+  OrderTime();
+
+  factory OrderTime.now() => OrderNow();
+}
 
 class OrderNow extends OrderTime {}
 
-class OrderDate extends OrderTime {
+class OrderAtDateTime extends OrderTime {
   final DateTime time;
 
-  OrderDate(this.time);
+  OrderAtDateTime(this.time);
 }
 
-class OrderDuration extends OrderTime {
+class OrderSecondsFromNow extends OrderTime {
   final int seconds;
 
-  OrderDuration(this.seconds);
+  OrderSecondsFromNow(this.seconds);
 }
 
 String createOrderTime(OrderTime startTime) => switch (startTime) {
       OrderNow() => "0",
-      OrderDate(time: var it) => it.millisecondsSinceEpoch.toString(),
-      OrderDuration(seconds: var it) => it.toString(),
+      OrderAtDateTime(time: var it) => it.millisecondsSinceEpoch.toString(),
+      OrderSecondsFromNow(seconds: var it) => "+$it",
     };
 
 enum OrderType {

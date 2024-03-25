@@ -172,6 +172,7 @@ abstract class OrderBase extends Command
         ApiCall,
         CheckOrder,
         OrderDirectionOption,
+        OrderStartAndExpire,
         OrderVolume,
         KrakenTimeOption,
         Pair,
@@ -193,6 +194,7 @@ class AddMarketOrder extends OrderBase {
     initCheckOrderFlag(argParser);
     initOrderDirectionOption(argParser);
     initOrderVolumeOption(argParser);
+    initOrderStartAndExpire(argParser);
   }
 
   @override
@@ -201,10 +203,10 @@ class AddMarketOrder extends OrderBase {
       direction: direction,
       pair: pair,
       volume: volume,
+      startTime: startTime,
+      expireTime: expireTime,
     ));
     logVerbose(() => result["descr"]["order"]);
-
-    final txid = (result["txid"] as List).first;
-    await checkOrder(api, txid);
+    await checkOrder(api, result["txid"].first);
   }
 }

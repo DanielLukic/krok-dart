@@ -90,7 +90,7 @@ mixin CheckOrder {
     argParser.addFlag(
       "check",
       abbr: "k",
-      help: "Check for cancellation or error immediately.",
+      help: "Check for cancellation immediately. Otherwise, use the queryorders command.",
       defaultsTo: false,
       callback: (it) => check = it,
     );
@@ -146,6 +146,63 @@ mixin OrderVolume {
       help: "Volume in asset quantity.",
       mandatory: true,
       callback: (it) => volume = double.parse(it!),
+    );
+  }
+}
+
+// TODO implements? seems odd...
+mixin OrderStartAndExpire implements KrakenTimeOption {
+  KrakenTime? start;
+  int? startIn;
+  KrakenTime? expire;
+  int? expireIn;
+
+  OrderTime? get startTime {
+    OrderTime? result;
+    if (start != null) {
+      result = OrderAtDateTime(start!.asDateTime()!);
+    } else if (startIn != null) {
+      result = OrderSecondsFromNow(startIn!);
+    }
+    return result;
+  }
+
+  OrderTime? get expireTime {
+    OrderTime? result;
+    if (expire != null) {
+      result = OrderAtDateTime(expire!.asDateTime()!);
+    } else if (expireIn != null) {
+      result = OrderSecondsFromNow(expireIn!);
+    }
+    return result;
+  }
+
+  initOrderStartAndExpire(ArgParser argParser) {
+    initKrakenTimeOption(
+      argParser,
+      name: "start",
+      abbr: "s",
+      assign: (it) => start = it != null ? KrakenTime.fromString(it) : null,
+    );
+    argParser.addOption(
+      "startIn",
+      aliases: ["si", "sin"],
+      help: "Set relative start time in seconds. Aliases: si sin",
+      valueHelp: "seconds",
+      callback: (it) => startIn = it != null ? int.parse(it) : null,
+    );
+    initKrakenTimeOption(
+      argParser,
+      name: "expire",
+      abbr: "e",
+      assign: (it) => expire = it != null ? KrakenTime.fromString(it) : null,
+    );
+    argParser.addOption(
+      "expireIn",
+      aliases: ["ei", "ein"],
+      help: "Set relative expire time in seconds. Aliases: ei ein",
+      valueHelp: "seconds",
+      callback: (it) => expireIn = it != null ? int.parse(it) : null,
     );
   }
 }
