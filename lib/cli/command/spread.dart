@@ -1,6 +1,6 @@
 part of '../cli.dart';
 
-class Spread extends Command with AutoCache, Pair, ApiCall, KrakenTimeOption, Tabular {
+class Spread extends Command with AutoCache, Pair, ApiCall, KrakenTimeOption, Since, Tabular {
   @override
   String get name => "spread";
 
@@ -12,16 +12,9 @@ class Spread extends Command with AutoCache, Pair, ApiCall, KrakenTimeOption, Ta
 
   Spread() {
     initTabularOptions(argParser);
-    initKrakenTimeOption(
-      argParser,
-      name: "since",
-      abbr: "s",
-      assign: (it) => since = it != null ? KrakenTime.fromString(it) : since,
-    );
+    initSince(argParser);
     initPairOption(argParser);
   }
-
-  KrakenTime? since;
 
   @override
   autoClose(KrakenApi api) async {

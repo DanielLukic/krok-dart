@@ -51,6 +51,7 @@ enum OrderFlag {
   viqc,
 }
 
+@Deprecated("Use KrakenTime directly.")
 sealed class OrderTime {
   OrderTime();
 
@@ -60,9 +61,9 @@ sealed class OrderTime {
 class OrderNow extends OrderTime {}
 
 class OrderAtDateTime extends OrderTime {
-  final DateTime time;
+  final double tm;
 
-  OrderAtDateTime(this.time);
+  OrderAtDateTime(this.tm);
 }
 
 class OrderSecondsFromNow extends OrderTime {
@@ -73,7 +74,7 @@ class OrderSecondsFromNow extends OrderTime {
 
 String createOrderTime(OrderTime startTime) => switch (startTime) {
       OrderNow() => "0",
-      OrderAtDateTime(time: var it) => it.millisecondsSinceEpoch.toString(),
+      OrderAtDateTime(tm: var it) => it.toString(),
       OrderSecondsFromNow(seconds: var it) => "+$it",
     };
 

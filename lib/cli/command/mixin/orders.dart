@@ -153,56 +153,34 @@ mixin OrderVolume {
 // TODO implements? seems odd...
 mixin OrderStartAndExpire implements KrakenTimeOption {
   KrakenTime? start;
-  int? startIn;
   KrakenTime? expire;
-  int? expireIn;
 
-  OrderTime? get startTime {
-    OrderTime? result;
-    if (start != null) {
-      result = OrderAtDateTime(start!.asDateTime()!);
-    } else if (startIn != null) {
-      result = OrderSecondsFromNow(startIn!);
-    }
-    return result;
-  }
+  OrderTime? get startTime => start?.asOrderTime();
 
-  OrderTime? get expireTime {
-    OrderTime? result;
-    if (expire != null) {
-      result = OrderAtDateTime(expire!.asDateTime()!);
-    } else if (expireIn != null) {
-      result = OrderSecondsFromNow(expireIn!);
-    }
-    return result;
-  }
+  OrderTime? get expireTime => expire?.asOrderTime();
+
+  _assignStart(String? it) =>
+      start = it != null ? KrakenTime.fromString(it, since: false, allowShortForm: true) : null;
+
+  _assignExpire(String? it) =>
+      expire = it != null ? KrakenTime.fromString(it, since: false, allowShortForm: true) : null;
 
   initOrderStartAndExpire(ArgParser argParser) {
     initKrakenTimeOption(
       argParser,
       name: "start",
       abbr: "s",
-      assign: (it) => start = it != null ? KrakenTime.fromString(it) : null,
-    );
-    argParser.addOption(
-      "startIn",
-      aliases: ["si", "sin"],
-      help: "Set relative start time in seconds. Aliases: si sin",
-      valueHelp: "seconds",
-      callback: (it) => startIn = it != null ? int.parse(it) : null,
+      since: false,
+      allowShortForm: true,
+      assign: _assignStart,
     );
     initKrakenTimeOption(
       argParser,
       name: "expire",
       abbr: "e",
-      assign: (it) => expire = it != null ? KrakenTime.fromString(it) : null,
-    );
-    argParser.addOption(
-      "expireIn",
-      aliases: ["ei", "ein"],
-      help: "Set relative expire time in seconds. Aliases: ei ein",
-      valueHelp: "seconds",
-      callback: (it) => expireIn = it != null ? int.parse(it) : null,
+      since: false,
+      allowShortForm: true,
+      assign: _assignExpire,
     );
   }
 }

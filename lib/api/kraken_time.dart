@@ -1,52 +1,40 @@
+import 'package:krok/api/api.dart';
+
 /// Kraken API uses a timestamp (called "tm" or "time" in the API documentation) that is a double
 /// representing seconds since the Unix epoch. This class helps working with those timestamps.
 /// Especially when specifying relative dates/times like "1h" or "15m".
 ///
-/// This is somewhat experimental for now... ^^
+/// Additionally for orders, time can be specified via short form "+<seconds>". In this case the
+/// translation into timestamp/datetime is done inside the exchange. Therefore, a dedicated
+/// [seconds] field is used.
 ///
-/// The primary issue is the missing distinction between since/until for relative dates/times. Will
-/// have to revisit this at some point. For now the important step would be to have everything
-/// related to date/time handling in this one place.
+/// This is somewhat experimental for now... ^^
 class KrakenTime {
-  double? tm; // "tm" is the suffix used by the Kraken API
+  /// Absolute datetime as double of seconds since epoch.
+  /// "tm" is the suffix used by the Kraken API for timestamps. Otherwise, "time" is used. Just fyi.
+  double? tm;
 
-  KrakenTime.none();
-
-  KrakenTime.now() //
-      : tm = DateTime.now().millisecondsSinceEpoch / 1000.0;
+  /// In case of time specified via short form ("+<seconds>"), this holds the seconds.
+  int? seconds;
 
   /// Turn some date/time/duration string into a Kraken API "tm" value. This supports unix
   /// timestamp, RFC3339/ISO8601 datetime, and relative times like "1h" or "15m".
   ///
-  /// Setting the [since] flag to false changes relative times to be added to now. By default they
-  /// are subtracted from now (aka "since").
-  KrakenTime.fromString(String? it, {bool since = true}) //
-      : tm = it.toKrakenTm(since);
+  /// If [allowShortForm] is 'true', the input can use the "+<seconds>" short form, to have the
+  /// relative time be evaluate on the exchange instead of here directly.
+  ///
+  /// Setting the [since] flag to `false` changes relative times to be added to now. They are
+  /// subtracted from now (aka "since") if [since] is `true`.
+  KrakenTime.fromString(String? it, {required bool since, required bool allowShortForm}) {
+    final (tm, seconds) = it.toKrakenTm(since, allowShortForm);
+    this.tm = tm;
+    this.seconds = seconds;
+  }
 
-  KrakenTime.fromTimestamp(int unixTimestamp) //
-      : tm = unixTimestamp / 1000.0;
-
-  KrakenTime.fromDatetime(DateTime dateTime) //
-      : tm = dateTime.millisecondsSinceEpoch / 1000.0;
-
-  KrakenTime.since(Duration duration)
-      : tm = DateTime.now().subtract(duration).millisecondsSinceEpoch / 1000.0;
-
-  KrakenTime.duration(Duration duration)
-      : tm = DateTime.now().add(duration).millisecondsSinceEpoch / 1000.0;
-
-  KrakenTime.sinceFromString(String it)
-      : tm = DateTime.now().subtract(it.toDuration()!).millisecondsSinceEpoch / 1000.0;
-
-  KrakenTime.durationFromString(String it)
-      : tm = DateTime.now().add(it.toDuration()!).millisecondsSinceEpoch / 1000.0;
-
-  KrakenTime.fromApi(this.tm);
-
-  DateTime? asDateTime() {
-    final it = tm;
-    if (it == null) return null;
-    return DateTime.fromMillisecondsSinceEpoch((it * 1000).toInt());
+  OrderTime? asOrderTime() {
+    if (tm != null) return OrderAtDateTime(tm!);
+    if (seconds != null) return OrderSecondsFromNow(seconds!);
+    return null;
   }
 }
 
@@ -77,17 +65,21 @@ extension on String? {
     }
   }
 
-  double? toKrakenTm(bool since) {
+  (double?, int?) toKrakenTm(bool since, bool allowShortForm) {
     final it = this;
-    if (it == null) return null;
+    if (it == null) return (null, null);
     final DateTime result;
-    if (RegExp(r"^\d+$").hasMatch(it)) {
+    if (RegExp(r"^\+\d+$").hasMatch(it)) {
+      // short form case "+<seconds>" returns the seconds directly as 2nd value:
+      return (null, int.parse(it.substring(1)));
+      // otherwise create a DateTime from the input and return the double variant below...
+    } else if (RegExp(r"^\d+$").hasMatch(it)) {
       result = DateTime.fromMillisecondsSinceEpoch(int.parse(it), isUtc: true);
     } else if (RegExp(r"^\d+[smhd]$").hasMatch(it)) {
       result = it.toDateTime(since)!;
     } else {
       result = DateTime.parse(it);
     }
-    return result.millisecondsSinceEpoch / 1000.0;
+    return (result.millisecondsSinceEpoch / 1000.0, null);
   }
 }

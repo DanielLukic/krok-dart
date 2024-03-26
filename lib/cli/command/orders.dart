@@ -48,13 +48,17 @@ class ClosedOrders extends Command with ApiCall, Description, KrakenTimeOption, 
       argParser,
       name: "start",
       abbr: "s",
-      assign: (it) => start = it != null ? KrakenTime.fromString(it) : null,
+      since: true,
+      allowShortForm: false,
+      assign: _assignStart,
     );
     initKrakenTimeOption(
       argParser,
       name: "end",
       abbr: "e",
-      assign: (it) => end = it != null ? KrakenTime.fromString(it) : null,
+      since: true,
+      allowShortForm: false,
+      assign: _assignEnd,
     );
     argParser.addOption(
       "startTxid",
@@ -91,6 +95,12 @@ class ClosedOrders extends Command with ApiCall, Description, KrakenTimeOption, 
       callback: (it) => consolidateTaker = it,
     );
   }
+
+  _assignStart(it) =>
+      start = it != null ? KrakenTime.fromString(it, since: true, allowShortForm: false) : null;
+
+  _assignEnd(it) =>
+      end = it != null ? KrakenTime.fromString(it, since: true, allowShortForm: false) : null;
 
   KrakenTime? start;
   String? startTxid;

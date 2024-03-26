@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
+import 'package:krok/api/kraken_time.dart';
 import 'package:krok/common/extensions.dart';
 import 'package:krok/common/log.dart';
-import 'package:krok/api/kraken_time.dart';
 
 part 'package:krok/api/config.dart';
 part 'package:krok/api/exception.dart';
@@ -27,19 +27,16 @@ class KrakenApi {
   factory KrakenApi.from(String apiKey, String privateKey) =>
       KrakenApi.fromConfig(KrakenConfig(apiKey, privateKey));
 
-  factory KrakenApi.fromFile(String path) =>
-      KrakenApi.fromConfig(KrakenConfig.fromFile(path));
+  factory KrakenApi.fromFile(String path) => KrakenApi.fromConfig(KrakenConfig.fromFile(path));
 
   close() => client.close();
 
-  Future<Result> assets({List<Pair>? assets}) =>
-      retrieve(KrakenRequest.assets(assets: assets));
+  Future<Result> assets({List<Pair>? assets}) => retrieve(KrakenRequest.assets(assets: assets));
 
   Future<Result> assetPairs({List<Pair>? pairs}) =>
       retrieve(KrakenRequest.assetPairs(pairs: pairs));
 
-  Future<Result> ticker([List<Pair>? pairs]) =>
-      retrieve(KrakenRequest.ticker(pairs: pairs));
+  Future<Result> ticker([List<Pair>? pairs]) => retrieve(KrakenRequest.ticker(pairs: pairs));
 
   Future<Result> ohlc(Pair pair) => retrieve(KrakenRequest.ohlc(pair: pair));
 
@@ -85,8 +82,7 @@ class KrakenApi {
     var params = {"nonce": nonce.toString(), ...map};
     get.bodyFields = params;
     get.headers['API-Key'] = secret[0];
-    get.headers['API-Sign'] =
-        createApiSign(url.path, get.body, nonce, secret[1]);
+    get.headers['API-Sign'] = createApiSign(url.path, get.body, nonce, secret[1]);
 
     logVerbose("sending request $url: ${get.body}");
     var info = await client.send(get);
