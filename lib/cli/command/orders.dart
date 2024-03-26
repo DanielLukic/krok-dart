@@ -255,3 +255,41 @@ class AddLimitOrder extends OrderBase with OrderLimit {
     await checkOrder(api, result["txid"].first);
   }
 }
+
+class CancelOrder extends Command with ApiCall, Tabular {
+  @override
+  String get name => "cancelorder";
+
+  @override
+  String get description => "Cancel order via txid. Alias: $aliases";
+
+  @override
+  List<String> get aliases => const ["c", "cancel"];
+
+  CancelOrder() {
+    initTabularOptions(argParser);
+    argParser.addOption(
+      "txid",
+      abbr: "x",
+      help: "Order txid for cancellation. Aliases: $aliases",
+      valueHelp: "order-tx-id",
+      mandatory: true,
+      callback: (it) => txid = it!,
+    );
+  }
+
+  late String txid;
+
+  @override
+  autoClose(KrakenApi api) async {
+    final Result result = (await api.retrieve(KrakenRequest.cancelOrder(
+      txid: txid,
+    )));
+    final count = result["count"]?.toString() ?? "";
+    final pending = result["pending"]?.toString() ?? "";
+    dumpTable([
+      ["count", "pending"],
+      [count, pending]
+    ], headerDivider: true);
+  }
+}
