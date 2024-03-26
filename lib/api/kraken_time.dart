@@ -1,5 +1,3 @@
-import 'package:krok/api/api.dart';
-
 /// Kraken API uses a timestamp (called "tm" or "time" in the API documentation) that is a double
 /// representing seconds since the Unix epoch. This class helps working with those timestamps.
 /// Especially when specifying relative dates/times like "1h" or "15m".
@@ -31,9 +29,9 @@ class KrakenTime {
     this.seconds = seconds;
   }
 
-  OrderTime? asOrderTime() {
-    if (tm != null) return OrderAtDateTime(tm!);
-    if (seconds != null) return OrderSecondsFromNow(seconds!);
+  String? toApiString() {
+    if (tm != null) return "$tm";
+    if (seconds != null) return "+$seconds";
     return null;
   }
 }

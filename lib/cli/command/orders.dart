@@ -213,8 +213,8 @@ class AddMarketOrder extends OrderBase {
       direction: direction,
       pair: pair,
       volume: volume,
-      startTime: startTime,
-      expireTime: expireTime,
+      startTime: start,
+      expireTime: expire,
     ));
     logVerbose(() => result["descr"]["order"]);
     await checkOrder(api, result["txid"].first);

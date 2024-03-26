@@ -155,10 +155,6 @@ mixin OrderStartAndExpire implements KrakenTimeOption {
   KrakenTime? start;
   KrakenTime? expire;
 
-  OrderTime? get startTime => start?.asOrderTime();
-
-  OrderTime? get expireTime => expire?.asOrderTime();
-
   _assignStart(String? it) =>
       start = it != null ? KrakenTime.fromString(it, since: false, allowShortForm: true) : null;
 

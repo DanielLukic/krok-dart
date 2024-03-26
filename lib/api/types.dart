@@ -51,33 +51,6 @@ enum OrderFlag {
   viqc,
 }
 
-@Deprecated("Use KrakenTime directly.")
-sealed class OrderTime {
-  OrderTime();
-
-  factory OrderTime.now() => OrderNow();
-}
-
-class OrderNow extends OrderTime {}
-
-class OrderAtDateTime extends OrderTime {
-  final double tm;
-
-  OrderAtDateTime(this.tm);
-}
-
-class OrderSecondsFromNow extends OrderTime {
-  final int seconds;
-
-  OrderSecondsFromNow(this.seconds);
-}
-
-String createOrderTime(OrderTime startTime) => switch (startTime) {
-      OrderNow() => "0",
-      OrderAtDateTime(tm: var it) => it.toString(),
-      OrderSecondsFromNow(seconds: var it) => "+$it",
-    };
-
 enum OrderType {
   market("market", closeToo: false),
   limit("limit"),
