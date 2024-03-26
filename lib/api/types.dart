@@ -22,10 +22,14 @@ class KrakenPrice {
   factory KrakenPrice.fromString(final String value, {required bool trailingStop}) {
     var it = value;
     if (trailingStop) {
-      if (it.startsWith("+") && double.tryParse(it.substring(1)) != null) {
+      final validPrefix = RegExp(r"^[+\-]").hasMatch(it);
+      if (it.endsWith("%")) {
+        it = it.substring(0, it.length - 1);
+      }
+      if (validPrefix && double.tryParse(it.substring(1)) != null) {
         return KrakenPrice._(value);
       }
-      throw ArgumentError("Not a trailing stop price (+<value>[%]): $it", "value");
+      throw ArgumentError("Not a trailing stop price ((+-)<value>[%]): $it", "value");
     } else {
       if (it.startsWith("+") || it.startsWith("-") || it.startsWith("#")) {
         it = it.substring(1);

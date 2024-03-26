@@ -21,4 +21,33 @@ void main() {
     check("-1%", "-1%");
     check("#1%", "#1%");
   });
+
+  group("handles trailing stop values", () {
+    check(String input, String expected) {
+      test("$input == $expected", () {
+        expect(KrakenPrice.fromString(input, trailingStop: true).it, expected);
+      });
+    }
+
+    check("+1", "+1");
+    check("-1", "-1");
+    check("+1%", "+1%");
+    check("-1%", "-1%");
+  });
+
+  group("fails invalid trailing stop values", () {
+    fails(String input, Matcher expected) {
+      test("$input fails", () {
+        expect(() => KrakenPrice.fromString(input, trailingStop: true), expected);
+      });
+    }
+
+    fails("0", throwsA(isA<ArgumentError>()));
+    fails("1", throwsA(isA<ArgumentError>()));
+    fails("0.1", throwsA(isA<ArgumentError>()));
+    fails(".1", throwsA(isA<ArgumentError>()));
+    fails("#1", throwsA(isA<ArgumentError>()));
+    fails("1%", throwsA(isA<ArgumentError>()));
+    fails("#1%", throwsA(isA<ArgumentError>()));
+  });
 }
