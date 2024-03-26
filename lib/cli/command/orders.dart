@@ -282,14 +282,40 @@ class CancelOrder extends Command with ApiCall, Tabular {
 
   @override
   autoClose(KrakenApi api) async {
-    final Result result = (await api.retrieve(KrakenRequest.cancelOrder(
-      txid: txid,
-    )));
+    final Result result = await api.retrieve(KrakenRequest.cancelOrder(txid: txid));
     final count = result["count"]?.toString() ?? "";
     final pending = result["pending"]?.toString() ?? "";
-    dumpTable([
+    var data = [
       ["count", "pending"],
       [count, pending]
-    ], headerDivider: true);
+    ];
+    dumpTable(data, headerDivider: true);
+  }
+}
+
+class CancelAllOrders extends Command with ApiCall, Tabular {
+  @override
+  String get name => "cancelallorders";
+
+  @override
+  String get description => "Cancel all orders. Alias: $aliases";
+
+  @override
+  List<String> get aliases => const ["ca", "cao", "cancelall"];
+
+  CancelAllOrders() {
+    initTabularOptions(argParser);
+  }
+
+  @override
+  autoClose(KrakenApi api) async {
+    final Result result = await api.retrieve(KrakenRequest.cancelAll());
+    final count = result["count"]?.toString() ?? "";
+    final pending = result["pending"]?.toString() ?? "";
+    var data = [
+      ["count", "pending"],
+      [count, pending]
+    ];
+    dumpTable(data, headerDivider: true);
   }
 }
