@@ -14,6 +14,36 @@ enum AssetPairsInfo { info, leverage, fees, margin }
 
 enum CloseTime { both, open, close }
 
+class KrakenPrice {
+  final String it;
+
+  KrakenPrice._(this.it);
+
+  factory KrakenPrice.fromString(final String value, {required bool trailingStop}) {
+    var it = value;
+    if (trailingStop) {
+      if (it.startsWith("+") && double.tryParse(it.substring(1)) != null) {
+        return KrakenPrice._(value);
+      }
+      throw ArgumentError("Not a trailing stop price (+<value>[%]): $it", "value");
+    } else {
+      if (it.startsWith("+") || it.startsWith("-") || it.startsWith("#")) {
+        it = it.substring(1);
+      }
+      if (it.endsWith("%")) {
+        it = it.substring(0, it.length - 1);
+      }
+      if (double.tryParse(it) != null) {
+        return KrakenPrice._(value);
+      }
+      throw ArgumentError("Not a valid price ([+-#]<value>[%]): $it", "value");
+    }
+  }
+
+  @override
+  String toString() => it;
+}
+
 enum OhlcInterval {
   oneMinute(1),
   fiveMinutes(5),
