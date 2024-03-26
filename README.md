@@ -108,6 +108,25 @@ At the time of this writing, these commands are available:
 
 Run "krok help <command>" for more information about a command.
 
+# DSL
+
+Because adding the order and cancel commands shown above felt weird, I decided to provide three "DSL style" commands:
+
+`buy`, `sell` and `cancel`.
+
+These allow "clear text" commands like these:
+
+```
+cancel SOME-ORDER-TXID
+cancel SOME-ORDER-TXID,MORE-ORDER-TXIDS...
+cancel all
+
+krok sell "8.0 CFGUSD @ take profit 1.0 -> limit 1.0"
+krok buy "8.0 CFGUSD @ take profit 1.0 -> limit 1.0" --expire 10s
+```
+
+This feels like the right approach. I'll probably remove the "options-based" commands at some point.
+
 # The name?
 
 I have no idea.

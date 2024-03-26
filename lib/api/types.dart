@@ -16,8 +16,9 @@ enum CloseTime { both, open, close }
 
 class KrakenPrice {
   final String it;
+  final bool trailingStopPrice;
 
-  KrakenPrice._(this.it);
+  KrakenPrice._(this.it, this.trailingStopPrice);
 
   factory KrakenPrice.fromString(final String value, {required bool trailingStop}) {
     var it = value;
@@ -27,7 +28,7 @@ class KrakenPrice {
         it = it.substring(0, it.length - 1);
       }
       if (validPrefix && double.tryParse(it.substring(1)) != null) {
-        return KrakenPrice._(value);
+        return KrakenPrice._(value, trailingStop);
       }
       throw ArgumentError("Not a trailing stop price ((+-)<value>[%]): $it", "value");
     } else {
@@ -38,11 +39,15 @@ class KrakenPrice {
         it = it.substring(0, it.length - 1);
       }
       if (double.tryParse(it) != null) {
-        return KrakenPrice._(value);
+        return KrakenPrice._(value, trailingStop);
       }
       throw ArgumentError("Not a valid price ([+-#]<value>[%]): $it", "value");
     }
   }
+
+  String toPrice() => trailingStopPrice ? it.replaceFirst("-", "+") : it;
+
+  String toPrice2() => it;
 
   @override
   String toString() => it;

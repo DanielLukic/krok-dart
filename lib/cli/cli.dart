@@ -9,6 +9,7 @@ import 'package:krok/cli/output.dart';
 import 'package:krok/common/extensions.dart';
 import 'package:krok/common/log.dart';
 
+part 'command/add_order.dart';
 part 'command/asset_pairs.dart';
 part 'command/assets.dart';
 part 'command/balance.dart';
@@ -45,6 +46,7 @@ cli(List<String> args) async {
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
       ..addCommand(Balance())
+      ..addCommand(Buy())
       ..addCommand(Cancel())
       ..addCommand(CancelOrder())
       ..addCommand(CancelAllOrders())
@@ -52,6 +54,7 @@ cli(List<String> args) async {
       ..addCommand(Ohlc())
       ..addCommand(OpenOrders())
       ..addCommand(QueryOrders())
+      ..addCommand(Sell())
       ..addCommand(Spread())
       ..addCommand(SystemStatus())
       ..addCommand(Ticker())
