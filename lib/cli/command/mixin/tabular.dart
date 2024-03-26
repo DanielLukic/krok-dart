@@ -168,9 +168,8 @@ mixin Tabular {
   }
 
   List<List<String>> modifyDateTimeColumns(List<List<String>> rows) {
-    if (rows.length < 2) {
-      throw ArgumentError("header plus at least one row required");
-    }
+    if (rows.length < 2) return rows;
+
     final header = rows[0];
     final columns = header.indexWhere_((it) => it == "time" || it.endsWith("tm"));
     for (final row in rows.skip(1)) {

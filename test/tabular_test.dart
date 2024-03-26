@@ -10,22 +10,6 @@ void main() {
     subject = TabularTest();
   });
 
-  test('throws exception for single line input', () {
-    // given
-    final rows = [
-      ["a", "b", "c"],
-    ];
-
-    // when
-    actual(List<List> it) => subject.modifyDateTimeColumns(List.from(it));
-
-    // then
-    expect(
-      () => actual(rows),
-      throwsArgumentError,
-    );
-  });
-
   test('leaves raw data unchanged', () {
     // given
     final rows = [
