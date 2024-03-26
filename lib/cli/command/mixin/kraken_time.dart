@@ -10,12 +10,9 @@ mixin Since implements KrakenTimeOption {
       abbr: "s",
       since: true,
       allowShortForm: false,
-      assign: _assignSince,
+      assign: (it) => since = it,
     );
   }
-
-  KrakenTime? _assignSince(String? it) =>
-      since = it != null ? KrakenTime.fromString(it, since: true, allowShortForm: false) : since;
 }
 
 mixin KrakenTimeOption {
@@ -32,7 +29,7 @@ mixin KrakenTimeOption {
     required bool allowShortForm,
 
     /// callback receiving the value specified on the command line.
-    required Function(String?) assign,
+    required Function(KrakenTime?) assign,
   }) {
     final help = [
       "Either: Timestamp in UNIX format (UTC).",
@@ -41,12 +38,23 @@ mixin KrakenTimeOption {
       if (allowShortForm) "Or: +seconds with a leading plus sign.",
       "Relative examples: 15m, 1h, 30s",
     ];
+    final valueHelp = [
+      "timestamp",
+      "datetime",
+      "relative",
+      if (allowShortForm) "+seconds",
+    ];
     argParser.addOption(
       name,
       abbr: abbr,
       help: help.join("\n"),
-      valueHelp: "timestamp|datetime|relative",
-      callback: assign,
+      valueHelp: valueHelp.join("|"),
+      callback: (it) {
+        final result = it != null
+            ? KrakenTime.fromString(it, since: since, allowShortForm: allowShortForm)
+            : null;
+        assign(result);
+      },
     );
   }
 }

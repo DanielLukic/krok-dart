@@ -155,12 +155,6 @@ mixin OrderStartAndExpire implements KrakenTimeOption {
   KrakenTime? start;
   KrakenTime? expire;
 
-  _assignStart(String? it) =>
-      start = it != null ? KrakenTime.fromString(it, since: false, allowShortForm: true) : null;
-
-  _assignExpire(String? it) =>
-      expire = it != null ? KrakenTime.fromString(it, since: false, allowShortForm: true) : null;
-
   initOrderStartAndExpire(ArgParser argParser) {
     initKrakenTimeOption(
       argParser,
@@ -168,7 +162,7 @@ mixin OrderStartAndExpire implements KrakenTimeOption {
       abbr: "s",
       since: false,
       allowShortForm: true,
-      assign: _assignStart,
+      assign: (it) => start = it,
     );
     initKrakenTimeOption(
       argParser,
@@ -176,7 +170,7 @@ mixin OrderStartAndExpire implements KrakenTimeOption {
       abbr: "e",
       since: false,
       allowShortForm: true,
-      assign: _assignExpire,
+      assign: (it) => expire = it,
     );
   }
 }
