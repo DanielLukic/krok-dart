@@ -220,3 +220,38 @@ class AddMarketOrder extends OrderBase {
     await checkOrder(api, result["txid"].first);
   }
 }
+
+class AddLimitOrder extends OrderBase with OrderLimit {
+  @override
+  String get name => "limitorder";
+
+  @override
+  String get description => "Add basic limit order. Alias: $aliases";
+
+  @override
+  List<String> get aliases => const ["lo", "limit"];
+
+  AddLimitOrder() {
+    initTabularOptions(argParser);
+    initPairOption(argParser);
+    initCheckOrderFlag(argParser);
+    initOrderDirectionOption(argParser);
+    initOrderVolumeOption(argParser);
+    initOrderStartAndExpire(argParser);
+    initOrderLimitOption(argParser);
+  }
+
+  @override
+  autoClose(KrakenApi api) async {
+    final Result result = await api.retrieve(KrakenRequest.addLimitOrder(
+      direction: direction,
+      pair: pair,
+      price: limit,
+      volume: volume,
+      startTime: start,
+      expireTime: expire,
+    ));
+    logVerbose(() => result["descr"]["order"]);
+    await checkOrder(api, result["txid"].first);
+  }
+}

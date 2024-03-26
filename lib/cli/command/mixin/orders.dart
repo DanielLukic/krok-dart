@@ -174,3 +174,19 @@ mixin OrderStartAndExpire implements KrakenTimeOption {
     );
   }
 }
+
+mixin OrderLimit {
+  late KrakenPrice limit;
+
+  initOrderLimitOption(ArgParser argParser) {
+    argParser.addOption(
+      "limit",
+      abbr: "l",
+      help: "Limit price in target currency or percentage. Relative values allowed:\n"
+          "0.01, 10100, +100, -10, 5%, +5%, -5%\n"
+          "Special case: #10 or #10% will choose + or - depending on order direction.\n",
+      mandatory: true,
+      callback: (it) => limit = KrakenPrice.fromString(it!, trailingStop: false),
+    );
+  }
+}

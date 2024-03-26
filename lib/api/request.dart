@@ -193,7 +193,7 @@ class KrakenRequest {
   KrakenRequest.addLimitOrder({
     required OrderDirection direction,
     required Pair pair,
-    required double price,
+    required KrakenPrice price,
     required double volume,
     KrakenTime? startTime,
     KrakenTime? expireTime,

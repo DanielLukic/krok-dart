@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
@@ -41,6 +40,7 @@ run(List<String> args) async {
       ..addCachedOption()
       ..addKeyFileOption()
       ..addCommand(AddMarketOrder())
+      ..addCommand(AddLimitOrder())
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
       ..addCommand(Balance())
