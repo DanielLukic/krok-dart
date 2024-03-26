@@ -87,19 +87,26 @@ removing all parts except the order.
 
 At the time of this writing, these commands are available:
 
-```shell
-Available commands:
-  assetpairs     Retrieve asset pairs. Alias: [ap]
-  assets         Retrieve asset information. Alias: [a]
-  balance        Retrieve account balance data. Alias: [b]
-  closedorders   Retrieve closed orders. Alias: [co, closed]
-  ohlc           Retrieve ohlc data. Alias: [o]
-  openorders     Retrieve open orders. Alias: [oo, open]
-  spread         Retrieve spread data. Alias: [sp]
-  status         Retrieve Kraken system status. Alias: [s]
-  ticker         Retrieve ticker data. Alias: [t]
-  tradebalance   Retrieve trade balance data. Alias: [tb, tbal]
 ```
+  assetpairs        Retrieve asset pairs. Alias: [ap]
+  assets            Retrieve asset information. Alias: [a]
+  balance           Retrieve account balance data. Alias: [b]
+  cancelallorders   Cancel all orders. Alias: [ca, cao, cancelall]
+  cancelorder       Cancel order via txid. Alias: [c, cancel]
+  closedorders      Retrieve closed orders. Alias: [co, closed]
+  limitorder        Add basic limit order. Alias: [lo, limit]
+  marketorder       Add basic market order. Alias: [mo, market]
+  ohlc              Retrieve ohlc data. Alias: [o]
+  openorders        Retrieve open orders. Alias: [oo, open]
+  queryorders       Retrieve order data via txid. Alias: [q, qo, query]
+  spread            Retrieve spread data. Alias: [sp]
+  status            Retrieve Kraken system status. Alias: [s]
+  ticker            Retrieve ticker data. Alias: [t]
+  tradebalance      Retrieve trade balance data. Alias: [tb, tbal]
+  tradevolume       Retrieve trade volume data. Alias: [tv, tvol]
+```
+
+Run "krok help <command>" for more information about a command.
 
 # The name?
 
