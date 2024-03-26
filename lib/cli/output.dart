@@ -4,30 +4,24 @@ import 'dart:convert';
 
 import 'package:krok/common/extensions.dart';
 
+typedef TabularData = List<List<String>>;
+
 /// Pad data from inner list to same length, with single space plus | as table
 /// divider around each cell. Insert a - line after the first row if [headerDivider].
 List<String> formatTable(List<List<String>> rows, {bool headerDivider = true}) {
   int toStringLength(String it) => it.length;
 
-  final allColumns = rows.first; // pair + dataColumns
+  final header = rows.first;
   final columnLengths = List.generate(
-    allColumns.length,
+    header.length,
     (column) => rows.extractColumn(column).map(toStringLength).toMax(),
   );
 
-  String reformat(List<String> row, List<int> columnLengths) =>
-      [for (var i = 0; i < allColumns.length; i++) " ${row[i].padRight(columnLengths[i])} |"].join("");
+  String reformat(List<String> row) =>
+      [for (var i = 0; i < header.length; i++) " ${row[i].padRight(columnLengths[i])} |"].join("");
 
-  final formatted = rows
-      .map(
-        (row) => "|${reformat(row, columnLengths)}",
-      )
-      .toList();
-
-  if (headerDivider) {
-    formatted.insert(1, "".padLeft(formatted.first.length, "-"));
-  }
-
+  final formatted = rows.map((row) => "|${reformat(row)}").toList();
+  if (headerDivider) formatted.insert(1, "".padLeft(formatted.first.length, "-"));
   return formatted;
 }
 
@@ -47,3 +41,8 @@ dumpByKey(Map<String, dynamic> resultMap) {
     print("${entry.key}: ${resultMap[entry.key]}");
   }
 }
+
+dumpCsv(TabularData data) => formatCsv(data).forEach(print);
+
+dumpTable(TabularData data, {bool headerDivider = true}) =>
+    formatTable(data, headerDivider: headerDivider).forEach(print);

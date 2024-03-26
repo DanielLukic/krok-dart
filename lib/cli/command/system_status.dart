@@ -32,9 +32,9 @@ class SystemStatus extends Command with ApiCall {
       case OutputFormat.json:
         print(jsonEncode(result));
       case OutputFormat.csv:
-        formatCsv(result.asTableData()).forEach(print);
+        dumpCsv(result.asTableData());
       case OutputFormat.table:
-        formatTable(result.asTableData()).forEach(print);
+        dumpTable(result.asTableData());
     }
   }
 }

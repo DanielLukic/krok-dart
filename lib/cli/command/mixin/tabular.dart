@@ -1,7 +1,5 @@
 part of '../../cli.dart';
 
-typedef TabularData = List<List<String>>;
-
 enum OutputFormat { csv, json, raw, table }
 
 extension on OutputFormat {
@@ -107,9 +105,9 @@ mixin Tabular {
           print(jsonEncode(row));
         }
       case OutputFormat.csv:
-        formatCsv(data).forEach(print);
+        dumpCsv(data);
       case OutputFormat.table:
-        formatTable(data, headerDivider: header != null).forEach(print);
+        dumpTable(data, headerDivider: header != null);
     }
   }
 
@@ -120,9 +118,9 @@ mixin Tabular {
       case OutputFormat.json:
         print(jsonEncode(result));
       case OutputFormat.csv:
-        formatCsv(result.asTableData()).forEach(print);
+        dumpCsv(result.asTableData());
       case OutputFormat.table:
-        formatTable(result.asTableData(), headerDivider: false).forEach(print);
+        dumpTable(result.asTableData(), headerDivider: false);
     }
   }
 
@@ -133,9 +131,9 @@ mixin Tabular {
       case OutputFormat.json:
         print(jsonEncode(result));
       case OutputFormat.csv:
-        formatCsv(result.asTableData()).forEach(print);
+        dumpCsv(result.asTableData());
       case OutputFormat.table:
-        formatTable(result.asTableData(), headerDivider: false).forEach(print);
+        dumpTable(result.asTableData(), headerDivider: false);
     }
   }
 
@@ -161,9 +159,9 @@ mixin Tabular {
     rows = postProcessRows(rows);
 
     if (format case OutputFormat.csv) {
-      formatCsv(rows).forEach(print);
+      dumpCsv(rows);
     } else if (format case OutputFormat.table) {
-      formatTable(rows).forEach(print);
+      dumpTable(rows);
     }
   }
 
