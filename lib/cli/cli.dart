@@ -27,7 +27,7 @@ part 'command/tradebalance.dart';
 part 'command/tradevolume.dart';
 part 'options.dart';
 
-run(List<String> args) async {
+cli(List<String> args) async {
   try {
     final runner = CommandRunner(
       "krok",
@@ -44,6 +44,7 @@ run(List<String> args) async {
       ..addCommand(AssetPairs())
       ..addCommand(Assets())
       ..addCommand(Balance())
+      ..addCommand(Cancel())
       ..addCommand(CancelOrder())
       ..addCommand(CancelAllOrders())
       ..addCommand(ClosedOrders())

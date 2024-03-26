@@ -5,6 +5,10 @@ class KrakenRequest {
   final Map<String, dynamic> params;
   final Scope scope;
 
+  /// If this is used, [params] must be empty!
+  /// TODO use sealed for params vs json? but sealed is so awkward to use in dart.. ‾\_('')_/‾
+  Map<String, dynamic>? body;
+
   KrakenRequest.systemStatus()
       : path = "SystemStatus",
         params = {},
@@ -214,6 +218,14 @@ class KrakenRequest {
   })  : assert(txid.isNotEmpty),
         path = "CancelOrder",
         params = {"txid": txid},
+        scope = Scope.private;
+
+  KrakenRequest.cancelBatch({
+    required List<String> txids,
+  })  : assert(txids.isNotEmpty),
+        path = "CancelOrderBatch",
+        params = {},
+        body = {"orders": txids},
         scope = Scope.private;
 
   KrakenRequest.cancelAll()

@@ -74,13 +74,11 @@ class KrakenApi {
 
   Future<String> _private(KrakenRequest request, {String? nonce}) async {
     assert(request.scope == Scope.private, "private request expected");
+
     var url = Uri.parse('https://api.kraken.com/0/private/${request.path}');
     var get = Request('POST', url);
     nonce ??= nonceGenerator().toString();
-
-    var map = request.params.mapValues((v) => v.toString());
-    var params = {"nonce": nonce.toString(), ...map};
-    get.bodyFields = params;
+    request._update(get, nonce);
     get.headers['API-Key'] = secret[0];
     get.headers['API-Sign'] = createApiSign(url.path, get.body, nonce, secret[1]);
 
@@ -140,6 +138,23 @@ class KrakenApi {
     var request = Request('GET', url);
     var info = await request.send();
     return await info.stream.bytesToString();
+  }
+}
+
+extension on KrakenRequest {
+  _update(Request get, String nonce) {
+    if (body != null) {
+      if (params.isNotEmpty) {
+        throw ArgumentError("JSON body override requires empty params");
+      }
+      final data = {"nonce": nonce.toString(), ...body!};
+      get.body = jsonEncode(data);
+      get.headers['Content-Type'] = "application/json";
+    } else {
+      var map = params.mapValues((v) => v.toString());
+      var data = {"nonce": nonce.toString(), ...map};
+      get.bodyFields = data;
+    }
   }
 }
 
