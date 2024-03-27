@@ -8,7 +8,7 @@ class Balance extends Command with ApiCall, Tabular {
   String get description => "Retrieve account balance data. Alias: $aliases";
 
   @override
-  List<String> get aliases => const ["b"];
+  List<String> get aliases => const ["b", "bal"];
 
   Balance() {
     initTabularOptions(argParser);

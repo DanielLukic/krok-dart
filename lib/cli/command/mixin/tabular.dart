@@ -88,11 +88,7 @@ mixin Tabular {
     var data = raw.map((e) => e.map((e) => e.toString()).toList()).toList();
     if (header != null) data.insert(0, header);
     if (columns != null && header != null && format.isTabular) {
-      final picked = [for (final c in columns) header.indexOf(c)];
-      if (picked.any(isNegative)) {
-        throw ArgumentError("column(s) $columns not found in: $header");
-      }
-      data = [for (final row in data) pickColumns(row, picked)];
+      data = applyColumnSelection(data);
     }
 
     if (header != null && !timestamps) modifyDateTimeColumns(data);
@@ -138,31 +134,39 @@ mixin Tabular {
   }
 
   processResultMapOfMaps(Result result, {String keyColumn = "pair"}) {
-    // TODO less crazy after the pre/post-processing extraction
-    // TODO extract the column selection next to fix "descr" handling
+    if (format case OutputFormat.json) {
+      dumpJson(result);
+    } else if (format case OutputFormat.raw) {
+      dumpByKey(result);
+    } else {
+      final allColumnsForPreprocessing = _findAllColumns(result);
+      var rows = asTableData(keyColumn, allColumnsForPreprocessing, result);
+      rows = postProcessRows(rows);
+      rows = applyColumnSelection(rows);
 
+      if (format case OutputFormat.csv) {
+        dumpCsv(rows);
+      } else if (format case OutputFormat.table) {
+        dumpTable(rows);
+      }
+    }
+  }
+
+  List<List<String>> applyColumnSelection(List<List<String>> rows) {
     // auto-select all columns if "--table" without "--columns":
     if (columns == null && tabular) allColumns = true;
 
-    var selected = columns;
-    if (allColumns) selected = _findAllColumns(result);
-
-    if (format case OutputFormat.json) {
-      dumpJson(result);
-      return;
-    } else if (format case OutputFormat.raw) {
-      dumpByKey(result);
-      return;
+    if (!allColumns) {
+      final header = rows.first;
+      final selected = columns ?? [];
+      final picked = [for (final c in selected) header.indexOf(c)];
+      if (picked.any(isNegative)) {
+        throw ArgumentError("column(s) $columns not found in: $header");
+      }
+      rows = [for (final row in rows) pickColumns(row, picked)];
     }
 
-    var rows = asTableData(keyColumn, selected!, result);
-    rows = postProcessRows(rows);
-
-    if (format case OutputFormat.csv) {
-      dumpCsv(rows);
-    } else if (format case OutputFormat.table) {
-      dumpTable(rows);
-    }
+    return rows;
   }
 
   List<List<String>> modifyDateTimeColumns(List<List<String>> rows) {
@@ -189,11 +193,10 @@ mixin Tabular {
 
   String toKrakenDateTime(dynamic it) => double.tryParse(it)?.toKrakenDateTime().toString() ?? "";
 
-  List<String>? _findAllColumns(Result result) {
-    final merged = result.entries.map((e) => e.value.keys);
-    return {
-      for (final Iterable<String> columns in merged) ...columns,
-    }.toList();
+  List<String> _findAllColumns(Result result) {
+    final allInnerKeys = result.entries.map((e) => e.value.keys);
+    final unique = {for (final Iterable<String> columns in allInnerKeys) ...columns};
+    return unique.toList();
   }
 
   String primaryValueOnly(dynamic it) {

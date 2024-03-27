@@ -163,8 +163,5 @@ Maybe I'll extend support for reading or passing secret/key at some point.
 - [ ] TODO use a wrapper around the asset info to create prices?
 - [ ] TODO what about volume?
 
-- [ ] TODO apply column selection after column expansion
-- [ ] TODO auto-select descr if mode != hide and columns selected
-
-- [ ] TODO batch order/cancel
+- [ ] TODO batch order
 - [ ] TODO add userref support
