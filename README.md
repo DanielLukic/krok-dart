@@ -7,10 +7,12 @@ Command-line Kraken Crypto API wrapper written in Dart. Inspired by the Python `
 - https://github.com/zertrin/clikraken - primary inspiration
 - https://github.com/veox/python3-krakenex - used by clikraken
 - https://github.com/Dimibe/kraken_api - additional inspiration
+- https://pub.dev/packages/cli_util - for config folder lookup
+- https://pub.dev/packages/ansi - for log output coloring
 
 # Usage
 
-For now, the clikraken key file is used. This has to be available at `~/.config/clikraken/kraken.key` and contain the
+For now, the clikraken key file is used. This has to be available at `<confighome>/clikraken/kraken.key` and contain the
 public and private Kraken API keys in two lines. You can use the `-k` (`--keyfile`) option to specify a different
 location.
 

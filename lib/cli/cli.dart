@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:args/src/arg_parser.dart';
+import 'package:cli_util/cli_util.dart';
 import 'package:krok/api/api.dart';
 import 'package:krok/api/kraken_time.dart';
 import 'package:krok/cli/output.dart';
@@ -75,6 +76,6 @@ cli(List<String> args) async {
 
 final _logLevels = LogLevel.values.asNameMap();
 
-String _keyFilePath = "~/.config/clikraken/kraken.key";
+String _keyFilePath = "${applicationConfigHome("clikraken")}/kraken.key";
 
 Duration _cachedDuration = 5.minutes;

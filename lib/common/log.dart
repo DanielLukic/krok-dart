@@ -1,3 +1,5 @@
+import 'package:ansi/ansi.dart';
+
 var logLevel = LogLevel.info;
 
 enum LogLevel { verbose, debug, info, warn, error, none }
@@ -9,6 +11,7 @@ extension on LogLevel {
 log(Object? message, [LogLevel? level, StackTrace? trace]) {
   level ??= LogLevel.info;
   if (level.index < logLevel.index) return;
+
   var (name, where) = StackTrace.current.caller;
   if (message is Function) {
     try {
@@ -18,7 +21,24 @@ log(Object? message, [LogLevel? level, StackTrace? trace]) {
       return;
     }
   }
-  print("[${level.tag()}] $message [$name] $where");
+
+  var full = "[${level.tag()}] $message [$name] $where";
+  switch (level) {
+    case LogLevel.verbose:
+      full = gray(full);
+    case LogLevel.debug:
+      full = cyan(full);
+    case LogLevel.info:
+      full = green(full);
+    case LogLevel.warn:
+      full = magenta(full);
+    case LogLevel.error:
+      full = red(full);
+    case LogLevel.none:
+      break;
+  }
+  print(full);
+
   if (trace != null) print(trace.toString());
 }
 
