@@ -157,12 +157,10 @@ Maybe I'll extend support for reading or passing secret/key at some point.
 
 # Some To Dos
 
-- [ ] TODO add key file path option
 - [ ] TODO add key file option to pass keys instead of reading from file
 
 - [ ] TODO how to handle price/volume decimals?
 - [ ] TODO use a wrapper around the asset info to create prices?
-- [ ] TODO and have prices be a wrapper class/type?
 - [ ] TODO what about volume?
 
 - [ ] TODO apply column selection after column expansion
