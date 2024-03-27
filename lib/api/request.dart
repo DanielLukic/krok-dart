@@ -232,4 +232,31 @@ class KrakenRequest {
       : path = "CancelAll",
         params = {},
         scope = Scope.private;
+
+  KrakenRequest.editOrder({
+    required String txid,
+    required Pair pair,
+    int? userref,
+    double? volume,
+    double? displayVol,
+    KrakenPrice? price,
+    KrakenPrice? price2,
+    // TODO oflags
+    DateTime? deadline,
+    bool? cancelResponse,
+    bool? validate,
+  })  : path = "EditOrder",
+        params = {
+          "txid": txid,
+          "pair": pair,
+          if (userref != null) "userref": userref,
+          if (volume != null) "volume": volume,
+          if (displayVol != null) "displayvol": displayVol,
+          if (price != null) "price": price.toPrice(),
+          if (price2 != null) "price2": price2.toPrice2(),
+          if (deadline != null) "deadline": deadline.toIso8601String(),
+          if (cancelResponse != null) "cancelResponse": cancelResponse,
+          if (validate != null) "validate": validate,
+        },
+        scope = Scope.private;
 }

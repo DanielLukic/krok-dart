@@ -14,6 +14,7 @@ part 'command/asset_pairs.dart';
 part 'command/assets.dart';
 part 'command/balance.dart';
 part 'command/cancel.dart';
+part 'command/edit_order.dart';
 part 'command/mixin/api_call.dart';
 part 'command/mixin/auto_cache.dart';
 part 'command/mixin/kraken_time.dart';
@@ -51,6 +52,7 @@ cli(List<String> args) async {
       ..addCommand(CancelOrder())
       ..addCommand(CancelAllOrders())
       ..addCommand(ClosedOrders())
+      ..addCommand(EditOrder())
       ..addCommand(Ohlc())
       ..addCommand(OpenOrders())
       ..addCommand(QueryOrders())

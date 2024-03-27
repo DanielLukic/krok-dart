@@ -176,7 +176,6 @@ class QueryOrders extends Command with ApiCall, Description, Tabular, Trades {
   }
 }
 
-// TODO is this the way? seems odd...
 abstract class OrderBase extends Command
     with
         ApiCall,
