@@ -193,11 +193,6 @@ This being said, I probably won't invest too much time into this project.
 >
 > But Dart is actually OK. Will continue some more with this… 🙃
 
-# Gotchas
-
-For now this probably only works on Linux and maybe macOS because of the secret/key handling. This is fine for me.
-Maybe I'll extend support for reading or passing secret/key at some point.
-
 # Some To Dos
 
 Some random TODOs. There are a lot more TODOs, actually. But haven't bothered writing it all down for now… 🙈 
