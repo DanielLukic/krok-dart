@@ -2,7 +2,7 @@ Command-line Kraken Crypto API wrapper written in Dart. Inspired by the Python `
 
 **This is my first Dart project, used to learn the language. Keep that in mind! :-D**
 
-# Links / Credit
+### Links / Credit
 
 - https://github.com/zertrin/clikraken - primary inspiration
 - https://github.com/veox/python3-krakenex - used by clikraken
@@ -10,13 +10,46 @@ Command-line Kraken Crypto API wrapper written in Dart. Inspired by the Python `
 - https://pub.dev/packages/cli_util - for config folder lookup
 - https://pub.dev/packages/ansi - for log output coloring
 
-# Usage
+### Usage
+
+The primary reason I created this project was to have a "Kraken API syntax"-like "DSL". Some examples for this first.
+Then some more boring details in below sections.
+
+Show open orders, expanding the "descr" column, then pick only status, margin, leverage and order columns:
+```
+$ krok open -d expand -c status,_leverage,_order
+| status | _leverage | _order                                                     |
+-----------------------------------------------------------------------------------
+| open   | 3:1       | sell 3.00000000 BCHUSD @ trailing stop +3.3000%            |
+| open   | 5:1       | sell 1000.00000000 XRPUSD @ trailing stop +5.0000%         |
+```
+
+Place limit buy order using Kraken API syntax, expiring in 10 minutes from now:
+```
+$ krok buy '150.00000000 CFGUSD @ limit 0.7' --expire 10m
+ORDER0-TXID0-HERE00
+```
+
+Or a take profit limit order, expiring in 8 hours:
+```
+$ krok sell "150.0 CFGUSD @ take profit 1.0 -> limit 0.9" --expire 8h
+ORDER0-TXID0-HERE00
+```
+
+Cancel all open orders:
+```
+$ krok cancel all
+```
+
+#### Authentication
 
 For now, the clikraken key file is used. This has to be available at `<confighome>/clikraken/kraken.key` and contain the
 public and private Kraken API keys in two lines. You can use the `-k` (`--keyfile`) option to specify a different
 location.
 
-Use `dart run bin/krok.dart -h` to see the available command line options. Besides `-k` for the keyfile path and `-l` to
+#### Help
+
+Use `$ krok -h` to see the available command line options. Besides `-k` for the keyfile path and `-l` to
 change the log level, there is a semi-working `-c` option to auto-cache results from the public Kraken API endpoints.
 Auto-caching is always on for now. But applies only to public, parameterless API calls. This probably needs to be
 revisited.
@@ -25,10 +58,10 @@ Besides these options, everything else is driven by 'commands'. Please use `-h` 
 
 Some basic usage examples implemented so far:
 
-## Asset Pairs
+#### Asset Pairs
 
 ```shell
-dart run bin/krok.dart ap -c cost_decimals,ordermin,status | grep USD
+$ krok ap -c cost_decimals,ordermin,status | grep USD
 | pair      | cost_decimals | ordermin | status      |
 ------------------------------------------------------
 | 1INCHEUR  | 5             | 11       | online      |
@@ -40,10 +73,10 @@ dart run bin/krok.dart ap -c cost_decimals,ordermin,status | grep USD
 ...
 ```
 
-## Assets
+#### Assets
 
 ```shell
-dart run bin/krok.dart a
+$ krok a
 | pair      | aclass   | altname   | decimals | display_decimals | status  | collateral_value |
 -----------------------------------------------------------------------------------------------
 | 1INCH     | currency | 1INCH     | 10       | 5                | enabled | null             |
@@ -54,10 +87,10 @@ dart run bin/krok.dart a
 ...
 ```
 
-## Ticker
+#### Ticker
 
 ```shell
-dart run bin/krok.dart t | head
+$ krok t | head
 | pair      | a              | b              | c              | v                   | p              | t     | l              | h              | o              |
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | 1INCHEUR  | 0.52700        | 0.52600        | 0.52900        | 73.85599325         | 0.52860        | 4     | 0.52600        | 0.52900        | 0.52600        |
@@ -72,10 +105,12 @@ dart run bin/krok.dart t | head
 Note: By default only the first values of columns containing 'lists' are shown. The `--full` option will show
 everything.
 
-## Open Orders
+#### Open Orders
 
-```shell
-dart run bin/krok.dart oo -c descr -d order
+The command is `openorders` with aliases `oo` or `open`:
+
+```
+$ krok oo -c descr -d order
 | txid                | _order                                                           |
 ------------------------------------------------------------------------------------------
 | OZOSD7-7YEGF-ZDOVUX | sell 1892.64687153 TVKUSD @ take profit 0.41646 -> limit 0.40177 |
@@ -85,7 +120,7 @@ dart run bin/krok.dart oo -c descr -d order
 Note: `-c descr` will hide all columns except the 'descr' column. But `-d order` transforms the 'descr' column by
 removing all parts except the order.
 
-## More
+#### More
 
 At the time of this writing, these commands are available:
 
@@ -110,7 +145,7 @@ At the time of this writing, these commands are available:
 
 Run "krok help <command>" for more information about a command.
 
-# DSL
+#### DSL
 
 Because adding the order and cancel commands shown above felt weird, I decided to provide three "DSL style" commands:
 
@@ -129,15 +164,15 @@ krok buy "8.0 CFGUSD @ take profit 1.0 -> limit 1.0" --expire 10s
 
 This feels like the right approach. I'll probably remove the "options-based" commands at some point.
 
-# The name?
+### The name?
 
 I have no idea.
 
-# Does it work?
+### Does it work?
 
 Yes, I guess. But it is probably aligned with my use cases too much to be generally useful.
 
-# Why?
+### Why?
 
 As I said, to learn Dart.
 
@@ -152,12 +187,20 @@ take a look at. So there's that...
 
 This being said, I probably won't invest too much time into this project.
 
+> Update after a few days:
+>
+> Had some minor 'Aha!' moments. Still like Kotlin at lot better! 😂
+>
+> But Dart is actually OK. Will continue some more with this… 🙃
+
 # Gotchas
 
 For now this probably only works on Linux and maybe macOS because of the secret/key handling. This is fine for me.
 Maybe I'll extend support for reading or passing secret/key at some point.
 
 # Some To Dos
+
+Some random TODOs. There are a lot more TODOs, actually. But haven't bothered writing it all down for now… 🙈 
 
 - [ ] TODO add key file option to pass keys instead of reading from file
 
