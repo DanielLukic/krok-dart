@@ -164,6 +164,13 @@ krok buy "8.0 CFGUSD @ take profit 1.0 -> limit 1.0" --expire 10s
 
 This feels like the right approach. I'll probably remove the "options-based" commands at some point.
 
+### How To Use The KrakenApi Class
+
+Please see `bin/example.dart` for a first impression. Then continue by looking at the `lib/cli/command/` files for more
+details.
+
+Note that at least for now, this is meant to be used as a command line app primarily.
+
 ### The name?
 
 I have no idea.

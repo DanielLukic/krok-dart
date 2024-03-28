@@ -29,6 +29,15 @@ class KrakenTime {
     this.seconds = seconds;
   }
 
+  /// Shortcut for [fromString] to be used for placing order: Future times only. Short form allowed.
+  KrakenTime.forOrderPlacement(String? it)
+      : this.fromString(it, since: false, allowShortForm: true);
+
+  /// Shortcut for [fromString] to be used for retrieving orders: Past times only. No short form
+  /// allowed.
+  KrakenTime.forOrderRetrieval(String? it)
+      : this.fromString(it, since: false, allowShortForm: true);
+
   String? toApiString() {
     if (tm != null) return "$tm";
     if (seconds != null) return "+$seconds";
