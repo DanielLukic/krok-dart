@@ -1,4 +1,4 @@
-import 'package:krok/api/api.dart';
+import 'package:krok/src/api/api.dart';
 import 'package:test/test.dart';
 
 void main() {

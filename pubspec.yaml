@@ -1,8 +1,9 @@
 name: krok
-description: Kraken API plus command line client for Dart.
-version: 0.0.1
-repository: https://github.com/DanielLukic/dart-kraken-api
+description: Kraken Crypto API plus command line client for Dart. Inspired by the python clikraken tool.
+homepage: https://github.com/DanielLukic/krok-dart
+repository: https://github.com/DanielLukic/krok-dart
 topics: [ kraken, api, client, dart ]
+version: 0.0.2
 
 environment:
   sdk: ^3.3.1

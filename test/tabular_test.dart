@@ -1,4 +1,4 @@
-import 'package:krok/cli/cli.dart';
+import 'package:krok/src/cli/cli.dart';
 import 'package:test/test.dart';
 
 class TabularTest with Tabular {}

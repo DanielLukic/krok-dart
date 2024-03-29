@@ -212,3 +212,5 @@ Some random TODOs. There are a lot more TODOs, actually. But haven't bothered wr
 
 - [ ] TODO batch order
 - [ ] TODO add userref support
+
+- [ ] TODO consider existing log solutions

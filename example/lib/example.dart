@@ -1,6 +1,5 @@
 import 'package:cli_util/cli_util.dart';
-import 'package:krok/api/api.dart';
-import 'package:krok/api/kraken_time.dart';
+import 'package:krok/krok.dart';
 import 'package:path/path.dart';
 
 main() async {

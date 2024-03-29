@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:krok/common/extensions.dart';
+import 'package:krok/src/common/extensions.dart';
 
 typedef TabularData = List<List<String>>;
 

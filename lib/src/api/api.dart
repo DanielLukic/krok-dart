@@ -3,43 +3,60 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
-import 'package:krok/api/kraken_time.dart';
-import 'package:krok/common/extensions.dart';
-import 'package:krok/common/log.dart';
+import 'package:krok/src/common/extensions.dart';
+import 'package:krok/src/common/log.dart';
 
-part 'package:krok/api/config.dart';
-part 'package:krok/api/exception.dart';
-part 'package:krok/api/request.dart';
-part 'package:krok/api/types.dart';
+part 'package:krok/src/api/config.dart';
+part 'package:krok/src/api/exception.dart';
+part 'package:krok/src/api/kraken_time.dart';
+part 'package:krok/src/api/request.dart';
+part 'package:krok/src/api/types.dart';
 
+/// Main class for interacting with the Kraken API.
+///
+/// Implements the Kraken API public/private key and none-based authentication.
+///
+/// It is the callers responsibility to always only execute a single request.
 class KrakenApi {
-  List<String> secret;
+  List<String> _secret;
 
-  final Client client;
+  final Client _client;
 
-  final NonceGenerator nonceGenerator;
+  final NonceGenerator _nonceGenerator;
 
+  /// Create a new Kraken API instance based on the given [config].
   KrakenApi.fromConfig(KrakenConfig config)
-      : secret = [config.apiKey, config.privateKey],
-        client = config.client ?? Client(),
-        nonceGenerator = config.nonceGenerator ?? defaultNonceGenerator;
+      : _secret = [config.apiKey, config.privateKey],
+        _client = config.client ?? Client(),
+        _nonceGenerator = config.nonceGenerator ?? defaultNonceGenerator;
 
+  /// Create a new Kraken API instance based on the given [apiKey] and [privateKey].
   factory KrakenApi.from(String apiKey, String privateKey) =>
       KrakenApi.fromConfig(KrakenConfig(apiKey, privateKey));
 
+  /// Create a new Kraken API instance based on the given [path] to a file containing the API key
+  /// and private key.
   factory KrakenApi.fromFile(String path) => KrakenApi.fromConfig(KrakenConfig.fromFile(path));
 
-  close() => client.close();
+  /// Shut down the underlying client. Required to have the program terminate normally.
+  close() => _client.close();
 
+  /// High-level call to retrieve available assets. Can be restricted via optional [assets].
   Future<Result> assets({List<Pair>? assets}) => retrieve(KrakenRequest.assets(assets: assets));
 
+  /// High-level call to retrieve asset pairs. Can be restricted via optional [pairs].
   Future<Result> assetPairs({List<Pair>? pairs}) =>
       retrieve(KrakenRequest.assetPairs(pairs: pairs));
 
+  /// High-level call to retrieve ticker data. Can be restricted via optional [pairs].
   Future<Result> ticker([List<Pair>? pairs]) => retrieve(KrakenRequest.ticker(pairs: pairs));
 
+  /// High-level call to retrieve open, high, low, close values for the given [pair].
+  ///
+  /// See the underlying request if you need to specify time range and interval.
   Future<Result> ohlc(Pair pair) => retrieve(KrakenRequest.ohlc(pair: pair));
 
+  /// High-level call to retrieve trade volume data.
   Future<Result> tradeVolume() => retrieve(KrakenRequest.tradeVolume());
 
   /// Retrieves decoded json data from the Kraken API. Takes care of signing for
@@ -68,7 +85,7 @@ class KrakenApi {
         .replace(queryParameters: params);
     var get = Request('GET', url);
     logVerbose("sending request $url");
-    var info = await client.send(get);
+    var info = await _client.send(get);
     return await info.stream.bytesToString();
   }
 
@@ -77,18 +94,18 @@ class KrakenApi {
 
     var url = Uri.parse('https://api.kraken.com/0/private/${request.path}');
     var get = Request('POST', url);
-    nonce ??= nonceGenerator().toString();
+    nonce ??= _nonceGenerator().toString();
     request._update(get, nonce);
-    get.headers['API-Key'] = secret[0];
-    get.headers['API-Sign'] = createApiSign(url.path, get.body, nonce, secret[1]);
+    get.headers['API-Key'] = _secret[0];
+    get.headers['API-Sign'] = _authenticate(url.path, get.body, nonce, _secret[1]);
 
     logVerbose("sending request $url: ${get.body}");
-    var info = await client.send(get);
+    var info = await _client.send(get);
     return await info.stream.bytesToString();
   }
 
   /// Creates the Kraken API signature ("API-Sign") for a private API call.
-  String createApiSign(String path, String data, String nonce, String secret) {
+  String _authenticate(String path, String data, String nonce, String secret) {
     var innerBytes = utf8.encode(nonce.toString() + data);
     var innerDigest = sha256.convert(innerBytes);
     var pathBytes = utf8.encode(path);
@@ -122,7 +139,7 @@ class KrakenApi {
   }
 
   /// Loads cached json for the parameterless, public Kraken API call
-  /// represented by [path].
+  /// represented by [file].
   Future<String?> cached(File file) async {
     try {
       return await file.readAsString();

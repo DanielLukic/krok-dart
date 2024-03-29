@@ -14,6 +14,19 @@ enum AssetPairsInfo { info, leverage, fees, margin }
 
 enum CloseTime { both, open, close }
 
+/// Represents a Kraken API price. Depending on the context, different rules/restrictions apply.
+///
+/// This comes down to handling trailing stop prices differently. Please consult the Kraken API
+/// documentation for details. The gist: The trailing stop trigger/primary prices must use + with
+/// optional %. The Kraken exchange will map this + into + or - depending on the direction of the
+/// order (aka sell or buy).
+///
+/// For other prices, # can be used to mimic the same behavior as + for trailing stop. Not sure why
+/// they decided to do it like this... ‾\_('')_/‾
+///
+/// TODO This is still somewhat experimental.
+/// TODO Probably some invalid cases possible or valid cases not covered.
+/// TODO Secondary/limit price for trailing stop should probably be restricted differently. Revisit!
 class KrakenPrice {
   final String it;
   final bool trailingStopPrice;
@@ -45,14 +58,19 @@ class KrakenPrice {
     }
   }
 
+  /// Converts this price to a string that can be used in a Kraken API request as the primary
+  /// (trigger) price argument.
   String toPrice() => trailingStopPrice ? it.replaceFirst("-", "+") : it;
 
+  /// Converts this price to a string that can be used in a Kraken API request as the secondary
+  /// (limit) price argument.
   String toPrice2() => it;
 
   @override
   String toString() => it;
 }
 
+/// Represents the valid OHLC intervals.
 enum OhlcInterval {
   oneMinute(1),
   fiveMinutes(5),
@@ -90,6 +108,7 @@ enum OrderFlag {
   viqc,
 }
 
+/// The available order types. The required arguments are defined by the Kraken API documentation.
 enum OrderType {
   market("market", closeToo: false),
   limit("limit"),

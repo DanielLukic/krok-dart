@@ -1,3 +1,5 @@
+part of 'api.dart';
+
 /// Kraken API uses a timestamp (called "tm" or "time" in the API documentation) that is a double
 /// representing seconds since the Unix epoch. This class helps working with those timestamps.
 /// Especially when specifying relative dates/times like "1h" or "15m".
@@ -24,7 +26,7 @@ class KrakenTime {
   /// Setting the [since] flag to `false` changes relative times to be added to now. They are
   /// subtracted from now (aka "since") if [since] is `true`.
   KrakenTime.fromString(String? it, {required bool since, required bool allowShortForm}) {
-    final (tm, seconds) = it.toKrakenTm(since, allowShortForm);
+    final (tm, seconds) = it._toKrakenTm(since, allowShortForm);
     this.tm = tm;
     this.seconds = seconds;
   }
@@ -38,6 +40,7 @@ class KrakenTime {
   KrakenTime.forOrderRetrieval(String? it)
       : this.fromString(it, since: false, allowShortForm: true);
 
+  /// Transform the time represented by [this] into a Kraken API compatible representation.
   String? toApiString() {
     if (tm != null) return "$tm";
     if (seconds != null) return "+$seconds";
@@ -46,7 +49,7 @@ class KrakenTime {
 }
 
 extension on String? {
-  Duration? toDuration() {
+  Duration? _toDuration() {
     final it = this;
     if (it == null) return null;
     final modifier = it.substring(it.length - 1);
@@ -61,8 +64,8 @@ extension on String? {
     return duration;
   }
 
-  DateTime? toDateTime(since) {
-    final duration = toDuration();
+  DateTime? _toDateTime(since) {
+    final duration = _toDuration();
     if (duration == null) return null;
     var now = DateTime.now();
     if (since) {
@@ -72,7 +75,7 @@ extension on String? {
     }
   }
 
-  (double?, int?) toKrakenTm(bool since, bool allowShortForm) {
+  (double?, int?) _toKrakenTm(bool since, bool allowShortForm) {
     final it = this;
     if (it == null) return (null, null);
     final DateTime result;
@@ -83,7 +86,7 @@ extension on String? {
     } else if (RegExp(r"^\d+$").hasMatch(it)) {
       result = DateTime.fromMillisecondsSinceEpoch(int.parse(it), isUtc: true);
     } else if (RegExp(r"^\d+[smhd]$").hasMatch(it)) {
-      result = it.toDateTime(since)!;
+      result = it._toDateTime(since)!;
     } else {
       result = DateTime.parse(it);
     }

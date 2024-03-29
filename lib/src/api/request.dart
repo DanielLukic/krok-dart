@@ -1,5 +1,6 @@
 part of 'api.dart';
 
+/// Implements the available Kraken API requests via named constructors.
 class KrakenRequest {
   final String path;
   final Map<String, dynamic> params;

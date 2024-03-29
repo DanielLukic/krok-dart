@@ -1,3 +1,12 @@
+## 0.0.2
+
+Fix pub.dev related issues:
+
+- move example into example/lib
+- fix github url
+- add some more public api documentation
+- provide single package:krok/api.dart for easy import
+
 ## 0.0.1
 
 Initial release. Basic functionality is implemented:
