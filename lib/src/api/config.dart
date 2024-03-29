@@ -6,8 +6,7 @@ class KrakenConfig {
   Client? client;
   NonceGenerator? nonceGenerator;
 
-  KrakenConfig(this.apiKey, this.privateKey,
-      {this.client, this.nonceGenerator});
+  KrakenConfig(this.apiKey, this.privateKey, {this.client, this.nonceGenerator});
 
   factory KrakenConfig.from(String apiKey, String privateKey) {
     return KrakenConfig(apiKey, privateKey);

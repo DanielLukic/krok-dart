@@ -3,12 +3,15 @@ import 'package:krok/krok.dart';
 import 'package:path/path.dart';
 
 main() async {
-  final api = KrakenApi.fromFile(join(applicationConfigHome("clikraken"), "kraken.key"));
+  final api = KrakenApi.fromFile(
+      join(applicationConfigHome("clikraken"), "kraken.key"));
+
   try {
     await retrieveAssetPairs(api);
     await placeOrder(api);
 
-    // but see the existing commands in `lib/cli/command/` for examples of what you can do...
+    // see the existing commands in `lib/cli/command/` for more examples of
+    // what else you can do...
 
     // if you don't do this, the program won't exit:
   } finally {
@@ -24,8 +27,6 @@ Future<void> retrieveAssetPairs(KrakenApi api) async {
 
   // for this example, only printing the keys:
   print(pairs.keys);
-
-  // but see the existing commands in `lib/cli/command/` for examples of what you can do...
 }
 
 Future<void> placeOrder(KrakenApi api) async {
@@ -36,9 +37,13 @@ Future<void> placeOrder(KrakenApi api) async {
     pair: "CFGUSD",
     price: KrakenPrice.fromString("1.0", trailingStop: false),
     price2: KrakenPrice.fromString("-1%", trailingStop: false),
-    // forOrderPlacement allows the "+<seconds>" variant evaluated on the exchange:
+
+    // forOrderPlacement allows the "+<seconds>" variant evaluated on the
+    // exchange:
     expireTime: KrakenTime.forOrderPlacement("+5"),
-    // this in contrast would evaluate here in the client and may cause drift issues:
+
+    // this in contrast would evaluate here in the client and may cause time
+    // drift issues:
     //expireTime: KrakenTime.forOrderPlacement("5s"),
   ));
   print(resultWithTxid);
