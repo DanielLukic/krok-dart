@@ -41,6 +41,7 @@ cli(List<String> args) async {
 
     runner
       ..addLogOption()
+      ..addLogFileOption()
       ..addCachedOption()
       ..addKeyFileOption()
       ..addCommand(AddMarketOrder())

@@ -1,3 +1,8 @@
+## 0.0.3
+
+- use minilog package
+- add log file option
+
 ## 0.0.2
 
 Fix pub.dev related issues:

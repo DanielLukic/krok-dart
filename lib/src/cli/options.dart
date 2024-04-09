@@ -14,6 +14,16 @@ extension on CommandRunner<dynamic> {
   // value checked by parser already
   _setLogLevel(String? it) => logLevel = _logLevels[it] ?? logLevel;
 
+  addLogFileOption() => argParser.addOption(
+    "logfile",
+    abbr: "f",
+    help: "Set log file instead of console logging",
+    valueHelp: "filename",
+    callback: _setLogFile,
+  );
+
+  _setLogFile(String? it) => sink = it != null ? fileSink(it) : print;
+
   addCachedOption() => argParser.addOption(
         "cached",
         abbr: "c",
