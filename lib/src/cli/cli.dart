@@ -76,6 +76,7 @@ cli(List<String> args) async {
 
 final _logLevels = LogLevel.values.asNameMap();
 
-String _keyFilePath = path.join(applicationConfigHome("clikraken"), "kraken.key");
+String _keyFilePath =
+    path.join(applicationConfigHome("clikraken"), "kraken.key");
 
 Duration _cachedDuration = 5.minutes;
