@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:dart_minilog/dart_minilog.dart';
 import 'package:http/http.dart';
 import 'package:krok/src/common/extensions.dart';
-import 'package:krok/src/common/log.dart';
 
 part 'package:krok/src/api/config.dart';
 part 'package:krok/src/api/exception.dart';
