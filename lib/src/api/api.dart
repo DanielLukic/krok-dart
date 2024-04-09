@@ -36,20 +36,23 @@ class KrakenApi {
 
   /// Create a new Kraken API instance based on the given [path] to a file containing the API key
   /// and private key.
-  factory KrakenApi.fromFile(String path) => KrakenApi.fromConfig(KrakenConfig.fromFile(path));
+  factory KrakenApi.fromFile(String path) =>
+      KrakenApi.fromConfig(KrakenConfig.fromFile(path));
 
   /// Shut down the underlying client. Required to have the program terminate normally.
   close() => _client.close();
 
   /// High-level call to retrieve available assets. Can be restricted via optional [assets].
-  Future<Result> assets({List<Pair>? assets}) => retrieve(KrakenRequest.assets(assets: assets));
+  Future<Result> assets({List<Pair>? assets}) =>
+      retrieve(KrakenRequest.assets(assets: assets));
 
   /// High-level call to retrieve asset pairs. Can be restricted via optional [pairs].
   Future<Result> assetPairs({List<Pair>? pairs}) =>
       retrieve(KrakenRequest.assetPairs(pairs: pairs));
 
   /// High-level call to retrieve ticker data. Can be restricted via optional [pairs].
-  Future<Result> ticker([List<Pair>? pairs]) => retrieve(KrakenRequest.ticker(pairs: pairs));
+  Future<Result> ticker([List<Pair>? pairs]) =>
+      retrieve(KrakenRequest.ticker(pairs: pairs));
 
   /// High-level call to retrieve open, high, low, close values for the given [pair].
   ///
@@ -97,7 +100,8 @@ class KrakenApi {
     nonce ??= _nonceGenerator().toString();
     request._update(get, nonce);
     get.headers['API-Key'] = _secret[0];
-    get.headers['API-Sign'] = _authenticate(url.path, get.body, nonce, _secret[1]);
+    get.headers['API-Sign'] =
+        _authenticate(url.path, get.body, nonce, _secret[1]);
 
     logVerbose("sending request $url: ${get.body}");
     var info = await _client.send(get);
