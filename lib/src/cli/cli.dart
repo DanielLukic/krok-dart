@@ -27,8 +27,8 @@ part 'command/orders.dart';
 part 'command/spread.dart';
 part 'command/system_status.dart';
 part 'command/ticker.dart';
-part 'command/tradebalance.dart';
-part 'command/tradevolume.dart';
+part 'command/trade_balance.dart';
+part 'command/trade_volume.dart';
 part 'options.dart';
 
 cli(List<String> args) async {
