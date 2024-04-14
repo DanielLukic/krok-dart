@@ -114,7 +114,7 @@ enum OrderType {
   limit("limit"),
   stopLoss("stop-loss"),
   takeProfit("take-profit"),
-  stopLossLimit("stop-loss-profit"),
+  stopLossLimit("stop-loss-limit"),
   takeProfitLimit("take-profit-limit"),
   trailingStop("trailing-stop"),
   trailingStopLimit("trailing-stop-limit"),
