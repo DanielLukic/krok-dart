@@ -35,10 +35,6 @@ extension MapKeys<K, V> on Map<K, V> {
   Map<K, V> mapKeys(K Function(K k) f) => map((k, v) => MapEntry(f(k), v));
 }
 
-extension MapPlusMap<K, V> on Map<K, V> {
-  Map<K, V> operator +(Map<K, V> other) => this..addAll(other);
-}
-
 extension MapWhere<K, V> on Map<K, V> {
   Map<K, V> where(bool Function(K, V) test) =>
       entries.where((element) => test(element.key, element.value)).toMap();
