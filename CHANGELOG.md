@@ -1,3 +1,9 @@
+## 0.0.4
+
+- export extensions.dart for toKrakenDateTime
+- fix stop-loss-limit order type
+- exit immediately after command completion
+
 ## 0.0.3
 
 - use minilog package
