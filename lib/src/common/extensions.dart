@@ -41,11 +41,13 @@ extension MapWhere<K, V> on Map<K, V> {
 }
 
 extension MapEntries on Map<String, dynamic> {
-  Map<String, String> mapValues(String Function(dynamic v) f) => map((k, v) => MapEntry(k, f(v)));
+  Map<String, String> mapValues(String Function(dynamic v) f) =>
+      map((k, v) => MapEntry(k, f(v)));
 }
 
 extension MapAccess on Map<String, dynamic> {
-  Map<String, dynamic> dynamicMap(String key) => (this[key] as Map<String, dynamic>);
+  Map<String, dynamic> dynamicMap(String key) =>
+      (this[key] as Map<String, dynamic>);
 
   List<dynamic> list(String key) => (this[key] as List<dynamic>);
 
@@ -73,7 +75,8 @@ extension ListNullOrEmpty on List<dynamic>? {
 }
 
 extension MapToTable on Map<String, dynamic> {
-  List<List<String>> asTableData() => [
+  List<List<String>> asTableData() =>
+      [
         keys.toList(),
         values.map((e) => e.toString()).toList(),
       ].toList();
@@ -84,7 +87,11 @@ extension MapToTable on Map<String, dynamic> {
     final check = entries.first.value;
     if (check is List) {
       return [
-        ...entries.map((e) => [e.key, ...(e.value as List<dynamic>).map((e) => e.toString())]),
+        ...entries.map((e) =>
+        [
+          e.key,
+          ...(e.value as List<dynamic>).map((e) => e.toString())
+        ]),
       ];
     } else {
       return [
@@ -100,7 +107,8 @@ extension DoubleToKrakenDateTime on double {
 }
 
 extension IntToKrakenDateTime on int {
-  DateTime toKrakenDateTime() => DateTime.fromMillisecondsSinceEpoch(this * 1000, isUtc: true);
+  DateTime toKrakenDateTime() =>
+      DateTime.fromMillisecondsSinceEpoch(this * 1000, isUtc: true);
 }
 
 extension ModifyList on List<dynamic> {
@@ -124,6 +132,7 @@ extension ListOfT<T> on List<T> {
       indexed.where((it) => select(it.$2)).map((e) => e.$1).toList();
 }
 
-List<T> pickColumns<T>(List<T> row, List<int> columns) => [for (final c in columns) row[c]];
+List<T> pickColumns<T>(List<T> row, List<int> columns) =>
+    [for (final c in columns) row[c]];
 
 bool isNegative(int idx) => idx < 0;
