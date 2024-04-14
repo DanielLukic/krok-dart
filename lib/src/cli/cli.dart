@@ -66,6 +66,7 @@ cli(List<String> args) async {
       ..addCommand(TradeVolume());
 
     await runner.run(args);
+    exit(0);
   } on UsageException catch (it) {
     print(it);
     exit(2);
