@@ -75,8 +75,7 @@ extension ListNullOrEmpty on List<dynamic>? {
 }
 
 extension MapToTable on Map<String, dynamic> {
-  List<List<String>> asTableData() =>
-      [
+  List<List<String>> asTableData() => [
         keys.toList(),
         values.map((e) => e.toString()).toList(),
       ].toList();
@@ -88,10 +87,7 @@ extension MapToTable on Map<String, dynamic> {
     if (check is List) {
       return [
         ...entries.map((e) =>
-        [
-          e.key,
-          ...(e.value as List<dynamic>).map((e) => e.toString())
-        ]),
+            [e.key, ...(e.value as List<dynamic>).map((e) => e.toString())]),
       ];
     } else {
       return [
