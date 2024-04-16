@@ -40,8 +40,8 @@ extension MapWhere<K, V> on Map<K, V> {
       entries.where((element) => test(element.key, element.value)).toMap();
 }
 
-extension MapEntries on Map<String, dynamic> {
-  Map<String, String> mapValues(String Function(dynamic v) f) =>
+extension MapEntries<K, V> on Map<K, V> {
+  Map<K, R> mapValues<R>(R Function(V v) f) =>
       map((k, v) => MapEntry(k, f(v)));
 }
 
