@@ -1,3 +1,8 @@
+## 0.0.5
+
+- fix `mapValues` to be generic
+- use minilog 0.0.2
+
 ## 0.0.4
 
 - export extensions.dart for toKrakenDateTime
