@@ -30,18 +30,24 @@ enum CloseTime { both, open, close }
 class KrakenPrice {
   final String it;
   final bool trailingStopPrice;
+  final bool percentage;
+  final double value;
 
-  KrakenPrice._(this.it, this.trailingStopPrice);
+  KrakenPrice._(this.it, this.trailingStopPrice, this.percentage, this.value);
 
   factory KrakenPrice.fromString(final String value, {required bool trailingStop}) {
+    bool percentage = false;
+    double? result;
     var it = value;
     if (trailingStop) {
       final validPrefix = RegExp(r"^[+\-]").hasMatch(it);
       if (it.endsWith("%")) {
         it = it.substring(0, it.length - 1);
+        percentage = true;
       }
-      if (validPrefix && double.tryParse(it.substring(1)) != null) {
-        return KrakenPrice._(value, trailingStop);
+      result = double.tryParse(it.substring(1));
+      if (validPrefix && result != null) {
+        return KrakenPrice._(value, trailingStop, percentage, result);
       }
       throw ArgumentError("Not a trailing stop price ((+-)<value>[%]): $it", "value");
     } else {
@@ -50,9 +56,11 @@ class KrakenPrice {
       }
       if (it.endsWith("%")) {
         it = it.substring(0, it.length - 1);
+        percentage = true;
       }
-      if (double.tryParse(it) != null) {
-        return KrakenPrice._(value, trailingStop);
+      result = double.tryParse(it);
+      if (result != null) {
+        return KrakenPrice._(value, trailingStop, percentage, result);
       }
       throw ArgumentError("Not a valid price ([+-#]<value>[%]): $it", "value");
     }
