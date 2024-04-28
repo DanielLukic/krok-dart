@@ -3,7 +3,7 @@ description: Kraken Crypto API plus command line client for Dart. Inspired by th
 homepage: https://github.com/DanielLukic/krok-dart
 repository: https://github.com/DanielLukic/krok-dart
 topics: [ kraken, api, client, dart ]
-version: 0.0.5
+version: 0.0.6
 
 environment:
   sdk: ^3.3.1

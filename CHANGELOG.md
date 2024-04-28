@@ -1,3 +1,8 @@
+## 0.0.6
+
+- add missing `userref` argument to `KrakenRequest` calls
+- fix handling `limit` in buy/sell order commands
+
 ## 0.0.5
 
 - fix `mapValues` to be generic
