@@ -1,7 +1,13 @@
 part of '../cli.dart';
 
 abstract class AddOrder extends Command
-    with ApiCall, CheckOrder, KrakenTimeOption, OrderStartAndExpire, Tabular {
+    with
+        ApiCall,
+        CheckOrder,
+        KrakenTimeOption,
+        OrderStartAndExpire,
+        Tabular,
+        Userref {
   @override
   String get description => "Add $name order.";
 
@@ -57,6 +63,7 @@ abstract class AddOrder extends Command
     initTabularOptions(argParser);
     initCheckOrderFlag(argParser);
     initOrderStartAndExpire(argParser);
+    initUserrefOption(argParser);
   }
 
   bool isPrice(String it, {required bool trailingStop}) {
@@ -113,10 +120,15 @@ abstract class AddOrder extends Command
           direction: direction,
           volume: volume,
           pair: pair,
-          price: price != null ? KrakenPrice.fromString(price, trailingStop: trailing) : null,
-          price2: price2 != null ? KrakenPrice.fromString(price2, trailingStop: trailing) : null,
+          price: price != null
+              ? KrakenPrice.fromString(price, trailingStop: trailing)
+              : null,
+          price2: price2 != null
+              ? KrakenPrice.fromString(price2, trailingStop: trailing)
+              : null,
           startTime: start,
           expireTime: expire,
+          userref: userref,
         ));
 
     switch (args) {

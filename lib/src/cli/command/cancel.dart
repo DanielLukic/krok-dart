@@ -35,7 +35,7 @@ class Cancel extends Command with ApiCall, Tabular {
 
       case [...var txids] when txids.every(isTxid):
         if (txids.length == 1) {
-          result = await api.retrieve(KrakenRequest.cancelOrder(txid: txids.single));
+          result = await api.retrieve(KrakenRequest.cancelOrder(txidOrUserref: txids.single));
         } else {
           result = await api.retrieve(KrakenRequest.cancelBatch(txids: txids));
         }

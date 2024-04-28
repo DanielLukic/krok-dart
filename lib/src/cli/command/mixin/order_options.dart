@@ -17,15 +17,19 @@ mixin Description {
               DescriptionMode.expand => "Expand description into columns.",
               DescriptionMode.hide => "Remove the description column.",
               DescriptionMode.keep => "Keep description as is.",
-              DescriptionMode.order => "Replace description column with its order value.",
-              DescriptionMode.noorder => "Expand description into columns, omitting order.",
+              DescriptionMode.order =>
+                "Replace description column with its order value.",
+              DescriptionMode.noorder =>
+                "Expand description into columns, omitting order.",
             },
           ),
-      callback: (it) => descriptionMode = DescriptionMode.values.asNameMap()[it] ?? descriptionMode,
+      callback: (it) => descriptionMode =
+          DescriptionMode.values.asNameMap()[it] ?? descriptionMode,
     );
   }
 
-  void updateDescription(List<String> header, List<List<dynamic>> rows, DescriptionMode mode) {
+  void updateDescription(
+      List<String> header, List<List<dynamic>> rows, DescriptionMode mode) {
     if (!header.contains("descr")) return;
 
     switch (mode) {
@@ -50,7 +54,8 @@ mixin Description {
     }
   }
 
-  void _expand(List<String> header, List<dynamic> rows, bool Function(String) selectColumn) {
+  void _expand(List<String> header, List<dynamic> rows,
+      bool Function(String) selectColumn) {
     final column = header.indexOf("descr");
     var headerUpdated = false;
     for (final List row in rows) {
@@ -66,6 +71,26 @@ mixin Description {
 
       headerUpdated = true;
     }
+  }
+}
+
+mixin Userref {
+  int? userref;
+
+  initUserrefOption(ArgParser argParser) {
+    argParser.addOption(
+      "userref",
+      abbr: "u",
+      help: "Specify int32 userref associated with order.",
+      callback: (it) {
+        final v = it;
+        if (v == null) return;
+        userref = int.tryParse(v);
+        if (userref == null) {
+          throw ArgumentError('Invalid userref: $it', 'userref');
+        }
+      },
+    );
   }
 }
 
@@ -90,7 +115,8 @@ mixin CheckOrder {
     argParser.addFlag(
       "check",
       abbr: "k",
-      help: "Check for cancellation immediately. Otherwise, use the queryorders command.",
+      help:
+          "Check for cancellation immediately. Otherwise, use the queryorders command.",
       defaultsTo: false,
       callback: (it) => check = it,
     );
@@ -107,7 +133,8 @@ mixin CheckOrder {
         status = result["status"]?.toString().toUpperCase();
         reason = result["reason"];
       } catch (it, trace) {
-        logError(it, trace); // log only - more important to provide the order txid below!
+        logError(it,
+            trace); // log only - more important to provide the order txid below!
       }
       if (status == "CANCELED") {
         throw KrakenException("$txid ($status) $reason");
@@ -182,11 +209,13 @@ mixin OrderLimit {
     argParser.addOption(
       "limit",
       abbr: "l",
-      help: "Limit price in target currency or percentage. Relative values allowed:\n"
+      help:
+          "Limit price in target currency or percentage. Relative values allowed:\n"
           "0.01, 10100, +100, -10, 5%, +5%, -5%\n"
           "Special case: #10 or #10% will choose + or - depending on order direction.\n",
       mandatory: true,
-      callback: (it) => limit = KrakenPrice.fromString(it!, trailingStop: false),
+      callback: (it) =>
+          limit = KrakenPrice.fromString(it!, trailingStop: false),
     );
   }
 }

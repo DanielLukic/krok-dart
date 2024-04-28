@@ -1,6 +1,7 @@
 part of '../cli.dart';
 
-class OpenOrders extends Command with ApiCall, Description, Tabular, Trades {
+class OpenOrders extends Command
+    with ApiCall, Description, Tabular, Trades, Userref {
   @override
   String get name => "openorders";
 
@@ -14,24 +15,28 @@ class OpenOrders extends Command with ApiCall, Description, Tabular, Trades {
     initTabularOptions(argParser);
     initDescriptionOption(argParser);
     initTradesOption(argParser);
+    initUserrefOption(argParser);
   }
 
   @override
   autoClose(KrakenApi api) async {
     final Result result = (await api.retrieve(KrakenRequest.openOrders(
       trades: showTrades,
+      userref: userref,
     )))["open"];
     processResultMapOfMaps(result, keyColumn: "txid");
   }
 
   @override
-  List<List<String>> preProcessRows(List<String> header, List<List> unprocessed) {
+  List<List<String>> preProcessRows(
+      List<String> header, List<List> unprocessed) {
     updateDescription(header, unprocessed, descriptionMode);
     return super.preProcessRows(header, unprocessed);
   }
 }
 
-class ClosedOrders extends Command with ApiCall, Description, KrakenTimeOption, Tabular, Trades {
+class ClosedOrders extends Command
+    with ApiCall, Description, KrakenTimeOption, Tabular, Trades, Userref {
   @override
   String get name => "closedorders";
 
@@ -44,6 +49,7 @@ class ClosedOrders extends Command with ApiCall, Description, KrakenTimeOption, 
   ClosedOrders() {
     initTabularOptions(argParser);
     initDescriptionOption(argParser);
+    initUserrefOption(argParser);
     initKrakenTimeOption(
       argParser,
       name: "start",
@@ -96,11 +102,13 @@ class ClosedOrders extends Command with ApiCall, Description, KrakenTimeOption, 
     );
   }
 
-  _assignStart(it) =>
-      start = it != null ? KrakenTime.fromString(it, since: true, allowShortForm: false) : null;
+  _assignStart(it) => start = it != null
+      ? KrakenTime.fromString(it, since: true, allowShortForm: false)
+      : null;
 
-  _assignEnd(it) =>
-      end = it != null ? KrakenTime.fromString(it, since: true, allowShortForm: false) : null;
+  _assignEnd(it) => end = it != null
+      ? KrakenTime.fromString(it, since: true, allowShortForm: false)
+      : null;
 
   KrakenTime? start;
   String? startTxid;
@@ -121,18 +129,21 @@ class ClosedOrders extends Command with ApiCall, Description, KrakenTimeOption, 
       offset: offset,
       closeTime: closeTime,
       consolidateTaker: consolidateTaker,
+      userref: userref,
     )))["closed"];
     processResultMapOfMaps(result, keyColumn: "txid");
   }
 
   @override
-  List<List<String>> preProcessRows(List<String> header, List<List> unprocessed) {
+  List<List<String>> preProcessRows(
+      List<String> header, List<List> unprocessed) {
     updateDescription(header, unprocessed, descriptionMode);
     return super.preProcessRows(header, unprocessed);
   }
 }
 
-class QueryOrders extends Command with ApiCall, Description, Tabular, Trades {
+class QueryOrders extends Command
+    with ApiCall, Description, Tabular, Trades, Userref {
   @override
   String get name => "queryorders";
 
@@ -146,13 +157,16 @@ class QueryOrders extends Command with ApiCall, Description, Tabular, Trades {
     initTabularOptions(argParser);
     initDescriptionOption(argParser);
     initTradesOption(argParser);
+    initUserrefOption(argParser);
     argParser.addMultiOption(
       "txids",
       abbr: "x",
-      help: "One ore more (comma-separated) txids for which to query order info.",
+      help:
+          "One ore more (comma-separated) txids for which to query order info.",
       valueHelp: "order-tx-id",
-      callback: (it) =>
-          txids = it.isNotEmpty ? it : throw UsageException("At least one txid required!", usage),
+      callback: (it) => txids = it.isNotEmpty
+          ? it
+          : throw UsageException("At least one txid required!", usage),
     );
   }
 
@@ -165,12 +179,14 @@ class QueryOrders extends Command with ApiCall, Description, Tabular, Trades {
       trades: showTrades,
       txids: txids,
       consolidateTaker: consolidateTaker,
+      userref: userref,
     )));
     processResultMapOfMaps(result, keyColumn: "txid");
   }
 
   @override
-  List<List<String>> preProcessRows(List<String> header, List<List> unprocessed) {
+  List<List<String>> preProcessRows(
+      List<String> header, List<List> unprocessed) {
     updateDescription(header, unprocessed, descriptionMode);
     return super.preProcessRows(header, unprocessed);
   }
@@ -270,7 +286,7 @@ class CancelOrder extends Command with ApiCall, Tabular {
     argParser.addOption(
       "txid",
       abbr: "x",
-      help: "Order txid for cancellation. Aliases: $aliases",
+      help: "Order txid (or userref) for cancellation. Aliases: $aliases",
       valueHelp: "order-tx-id",
       mandatory: true,
       callback: (it) => txid = it!,
@@ -281,7 +297,8 @@ class CancelOrder extends Command with ApiCall, Tabular {
 
   @override
   autoClose(KrakenApi api) async {
-    final Result result = await api.retrieve(KrakenRequest.cancelOrder(txid: txid));
+    final Result result =
+        await api.retrieve(KrakenRequest.cancelOrder(txidOrUserref: txid));
     final count = result["count"]?.toString() ?? "";
     final pending = result["pending"]?.toString() ?? "";
     var data = [
