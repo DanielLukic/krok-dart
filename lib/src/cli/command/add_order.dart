@@ -141,22 +141,28 @@ abstract class AddOrder extends Command
       case ["stop-loss", var price] when isPrice(price, trailingStop: false):
         result = await execute(OrderType.stopLoss, price: price);
 
-      case ["stop-loss", var price, "->", var price2]
-          when isPrice(price, trailingStop: false) && isPrice(price2, trailingStop: false):
-        result = await execute(OrderType.stopLossLimit, price: price, price2: price2);
+      case ["stop-loss", var price, "->", 'limit', var price2]
+          when isPrice(price, trailingStop: false) &&
+              isPrice(price2, trailingStop: false):
+        result = await execute(OrderType.stopLossLimit,
+            price: price, price2: price2);
 
       case ["take-profit", var price] when isPrice(price, trailingStop: false):
         result = await execute(OrderType.takeProfit, price: price);
 
-      case ["take-profit", var price, "->", var price2]
-          when isPrice(price, trailingStop: false) && isPrice(price2, trailingStop: false):
-        result = await execute(OrderType.takeProfitLimit, price: price, price2: price2);
+      case ["take-profit", var price, "->", 'limit', var price2]
+          when isPrice(price, trailingStop: false) &&
+              isPrice(price2, trailingStop: false):
+        result = await execute(OrderType.takeProfitLimit,
+            price: price, price2: price2);
 
       case ["trailing-stop", var price] when isPrice(price, trailingStop: true):
-        result = await execute(OrderType.trailingStop, price: price, trailing: true);
+        result =
+            await execute(OrderType.trailingStop, price: price, trailing: true);
 
-      case ["trailing-stop", var price, "->", var price2]
-          when isPrice(price, trailingStop: true) && isPrice(price2, trailingStop: true):
+      case ["trailing-stop", var price, "->", 'limit', var price2]
+          when isPrice(price, trailingStop: true) &&
+              isPrice(price2, trailingStop: true):
         result = await execute(OrderType.trailingStopLimit,
             price: price, price2: price2, trailing: true);
 
