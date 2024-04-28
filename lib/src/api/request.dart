@@ -86,9 +86,12 @@ class KrakenRequest {
         params = {if (baseAsset != null) "asset": baseAsset},
         scope = Scope.private;
 
-  KrakenRequest.openOrders({bool? trades})
+  KrakenRequest.openOrders({bool? trades, int? userref})
       : path = "OpenOrders",
-        params = {if (trades != null) "trades": trades},
+        params = {
+          if (trades != null) "trades": trades,
+          if (userref != null) "userref": userref,
+        },
         scope = Scope.private;
 
   KrakenRequest.closedOrders({
@@ -100,6 +103,7 @@ class KrakenRequest {
     int? offset,
     CloseTime? closeTime,
     bool? consolidateTaker,
+    int? userref,
   })  : path = "ClosedOrders",
         params = {
           if (trades != null) "trades": trades,
@@ -110,6 +114,7 @@ class KrakenRequest {
           if (offset != null) "ofs": offset,
           if (closeTime != null) "closetime": closeTime.name,
           if (consolidateTaker != null) "consolidate_taker": consolidateTaker,
+          if (userref != null) "userref": userref,
         },
         scope = Scope.private;
 
@@ -117,12 +122,14 @@ class KrakenRequest {
     bool? trades,
     required List<String> txids,
     bool? consolidateTaker,
+    int? userref,
   })  : assert(txids.isNotEmpty),
         path = "QueryOrders",
         params = {
           if (trades != null) "trades": trades,
           "txid": txids.join(","),
           if (consolidateTaker != null) "consolidate_taker": consolidateTaker,
+          if (userref != null) "userref": userref,
         },
         scope = Scope.private;
 
@@ -153,6 +160,7 @@ class KrakenRequest {
     double? closePrice2,
     DateTime? deadline,
     bool? validate,
+    int? userref,
   })  : assert(closeOrderType?.closeToo != false),
         path = "AddOrder",
         params = {
@@ -175,6 +183,7 @@ class KrakenRequest {
           if (closePrice2 != null) "close[price2]": closePrice2,
           if (deadline != null) "deadline": deadline.toIso8601String(),
           if (validate != null) "validate": validate,
+          if (userref != null) "userref": userref,
         },
         scope = Scope.private;
 
@@ -215,10 +224,10 @@ class KrakenRequest {
         scope = Scope.private;
 
   KrakenRequest.cancelOrder({
-    required String txid,
-  })  : assert(txid.isNotEmpty),
+    required String txidOrUserref,
+  })  : assert(txidOrUserref.isNotEmpty),
         path = "CancelOrder",
-        params = {"txid": txid},
+        params = {"txid": txidOrUserref},
         scope = Scope.private;
 
   KrakenRequest.cancelBatch({
